@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace GiftCertWeb.Models.Dto
+{
+    public class OutletDto
+    {
+        public string Name { get; set; }
+    }
+}

@@ -1,0 +1,150 @@
+﻿@model GiftCertWeb.Models.GiftCert
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<h4>Gift Cert</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+
+       
+        <div id="panel5" class="panel panel-default" data-role="panel">
+            <div class="panel-heading">Details</div>
+            <div class="panel-body">
+                <div class='row'>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>Gift Cert No</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.GiftCertNo)
+                        </div>
+                    </div>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>Issuance Date</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.IssuanceDate)
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row'>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>DTI Permit No</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.DtiPermitNo)
+                        </div>
+                    </div>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>Expiration Date</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.ExpirationDate)
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row'>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>Gc Type</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.GcType.Name)
+                        </div>
+                    </div>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>QR Code</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.QrCode)
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row'>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>Value</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.Value)
+                        </div>
+                    </div>
+                    <div class='form-group col-xs-6'>
+                        <label class='col-xs-4 control-label'>Note</label>
+                        <div class='col-xs-8'>
+                            @Html.DisplayFor(model => model.Note)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="panel5" class="panel panel-default" data-role="panel">
+            <div class="panel-heading">Services</div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ServicesType)
+            {
+                <tr>
+
+                    <td class='col-xs-10'>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td class='col-xs-2'>
+                        @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+                    </td>
+                </tr>
+}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="panel5" class="panel panel-default" data-role="panel">
+            <div class="panel-heading">Outlet</div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.GcOutlet)
+            {
+                <tr>
+
+                    <td class='col-xs-10'>
+                        @Html.DisplayFor(modelItem => item.Outlet.Name)
+                    </td>
+                    <td class='col-xs-2'>
+                        @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+                    </td>
+                </tr>
+}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='form-group col-xs-12'>
+                <a asp-action="Edit" asp-route-id="@Model.GiftCertNo">Edit</a> |
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+<div>
+
+
+</div>

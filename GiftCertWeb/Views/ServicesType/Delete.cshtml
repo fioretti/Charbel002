@@ -1,0 +1,47 @@
+﻿@model GiftCertWeb.Models.ServicesType
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h3>Are you sure you want to delete this?</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Delete" class='form-horizontal'>
+            <input type="hidden" asp-for="Id" />
+           
+            <div id="panel5" class="panel panel-default" data-role="panel">
+                <div class="panel-heading">Service</div>
+                <div class="panel-body">
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Gift Cert No</label>
+                            <div class='col-xs-8'>
+                                <input name="GiftCertNo" type="text" value=@Model.GiftCertNo class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Name</label>
+                            <div class='col-xs-8'>
+                                <input name="OutletName" type="text" value=@Model.Name class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class='row'>
+                <div class='form-group col-xs-12'>
+                    <input type="submit" value="Delete" class="btn btn-default" />
+                    &nbsp;
+                    <a asp-controller="GiftCert" asp-action="Edit" asp-route-id="@Model.GiftCertNo">Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,160 @@
+﻿@model GiftCertWeb.Models.GiftCert
+
+@{
+    ViewData["Title"] = "Update";
+}
+
+<h4>Gift Cert</h4>
+<hr />
+<div class="row">
+
+    <div class="col-md-12">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="GiftCertNo" />
+            <div id="panel5" class="panel panel-default" data-role="panel">
+                <div class="panel-heading">Details</div>
+                <div class="panel-body">
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Gift Cert No</label>
+                            <div class='col-xs-8'>
+                                <input asp-for="GiftCertNo" class="form-control" />
+                                <span asp-validation-for="GiftCertNo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Issuance Date</label>
+                            <div class='col-xs-8'>
+                                <input asp-for="IssuanceDate" class="form-control" placeholder="MM/DD/YYYY" type="text" />
+                                <span asp-validation-for="IssuanceDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>DTI Permit No</label>
+                            <div class='col-xs-8'>
+                                <input asp-for="DtiPermitNo" class="form-control" />
+                                <span asp-validation-for="DtiPermitNo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Expiration Date</label>
+                            <div class='col-xs-8'>
+                                <input asp-for="ExpirationDate" class="form-control" placeholder="MM/DD/YYYY" type="text" />
+                                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Gc Type</label>
+                            <div class='col-xs-8'>
+                                <select asp-for="GcTypeId" class="form-control" asp-items="ViewBag.GcTypeId"></select>
+                                <span asp-validation-for="GcTypeId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>QR Code</label>
+                            <div class='col-xs-8'>
+                                <input asp-for="QrCode" class="form-control" readonly />
+                                <span asp-validation-for="QrCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Value</label>
+                            <div class='col-xs-8'>
+                                <input asp-for="Value" class="form-control" />
+                                <span asp-validation-for="Value" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Note</label>
+                            <div class='col-xs-8'>
+                                <textarea  asp-for="Note" class="form-control"></textarea>
+                                <span asp-validation-for="Note" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div id="panel5" class="panel panel-default" data-role="panel">
+                <div class="panel-heading">Services</div>
+                <div class="panel-body">                  
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class='col-xs-10'>Name</th>
+                                <th class='col-xs-2'><a asp-controller="ServicesType" asp-action="Create" asp-route-giftCertNo="@Model.GiftCertNo">New</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ServicesType)
+                            {
+                                <tr>
+
+                                    <td class='col-xs-10'>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td class='col-xs-2'>
+                                        <a asp-controller="ServicesType" asp-action="Edit" asp-route-id="@item.Id" asp-route-giftCertNo="@Model.GiftCertNo">Edit</a> |
+                                        <a asp-controller="ServicesType" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="panel5" class="panel panel-default" data-role="panel">
+                <div class="panel-heading">Outlet</div>
+                <div class="panel-body">                  
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class='col-xs-10'>Name</th>
+                                <th class='col-xs-2'><a asp-controller="GcOutlet" asp-action="Create" asp-route-giftCertNo="@Model.GiftCertNo">New</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.GcOutlet)
+                            {
+                                <tr>
+
+                                    <td class='col-xs-10'>
+                                        @Html.DisplayFor(modelItem => item.Outlet.Name)
+                                    </td>
+                                    <td class='col-xs-2'>
+                                        <a asp-controller="Outlet" asp-action="Edit" asp-route-id="@item.Outlet.Id" asp-route-giftCertNo="@Model.GiftCertNo">Edit</a> |
+                                        <a asp-controller="GcOutlet" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='form-group col-xs-12'>
+                    <input type="submit" value="Save" class="btn btn-default" />
+                    &nbsp;
+                    <a asp-action="Index">Back to List</a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

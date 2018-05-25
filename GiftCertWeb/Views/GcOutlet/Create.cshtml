@@ -1,0 +1,57 @@
+﻿@model GiftCertWeb.Models.GcOutlet
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<h4>Outlet</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" class='form-horizontal'>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="GiftCertNo" type="hidden" value=@ViewBag.GiftCertNo />
+
+            <div id="panel5" class="panel panel-default" data-role="panel">
+                <div class="panel-heading">New</div>
+                <div class="panel-body">
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Gift Cert No</label>
+                            <div class='col-xs-8'>
+                                <input value="@(ViewBag.GiftCertNo ?? string.Empty)" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <label class='col-xs-4 control-label'>Name</label>
+                            <div class='col-xs-8'>
+                                @*<input name="OutletName" id="OutletName" type="text" class="form-control" />*@                              
+                                <input asp-for="Outlet.Name" class="form-control" />
+                                <span asp-validation-for="Outlet.Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class='row'>
+                <div class='form-group col-xs-12'>
+                    <input type="submit" value="Save" class="btn btn-default" />
+                    &nbsp;
+                    <a asp-controller="GiftCert" asp-action="Edit" asp-route-id="@ViewBag.GiftCertNo">Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+   
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
