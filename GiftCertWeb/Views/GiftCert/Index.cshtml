@@ -63,7 +63,8 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.GiftCertNo">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.GiftCertNo">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.GiftCertNo">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.GiftCertNo">Delete</a> |
+                <a asp-controller="Print" asp-action="Preview" asp-route-id="@item.GiftCertNo" target="_blank">Print Preview</a>
             </td>
         </tr>
 }

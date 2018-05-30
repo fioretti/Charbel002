@@ -50,7 +50,8 @@ namespace GiftCertWeb.Controllers
 
             BulkCopy(filePath);
 
-            return Ok(new { count = files.Count, size, filePath });
+            //return Ok(new { count = files.Count, size, filePath });
+            return RedirectToAction("Index", "GiftCert");
         }
 
         public void BulkCopy(string filePath)

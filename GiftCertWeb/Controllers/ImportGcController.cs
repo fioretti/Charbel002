@@ -16,12 +16,12 @@ using GiftCertWeb.Models;
 
 namespace GiftCertWeb.Controllers
 {
-    public class BulkUploadController : Controller
+    public class ImportGcController : Controller
     {
         public static IConfiguration Configuration;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public BulkUploadController(IHostingEnvironment hostingEnvironment)
+        public ImportGcController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }

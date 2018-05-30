@@ -1,0 +1,39 @@
+﻿@addTagHelper "*, GiftCertWeb"
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h4>Import GC</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form method="post" enctype="multipart/form-data" asp-controller="UploadFiles" asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="panel5" class="panel panel-default" data-role="panel">
+                <div class="panel-heading">Upload one or more files using this form</div>
+                <div class="panel-body">
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>                          
+                            <div class='col-xs-8'>
+                                <input type="file" id="files" name="files" multiple />
+                                @*<span asp-validation-for="files" class="text-danger"></span>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='form-group col-xs-6'>
+                            <div class="col-md-10">
+                                <input type="submit" value="Upload" />
+                            </div>
+                        </div>
+                    </div>                 
+                </div>
+        </form>
+    </div>
+
+
+
+    @*<qrcode-png alt="QR Code" width="500" height="500" margin="0" content="https://github.com/micjahn/ZXing.Net" />*@
+</div>
+
