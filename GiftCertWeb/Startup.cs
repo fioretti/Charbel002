@@ -39,7 +39,8 @@ namespace GiftCertWeb
 
             services.AddMvc();
 
-            var connection = @"Server=DESKTOP-VVAIN90\SQLEXPRESS;Database=GiftCertificateDB;Trusted_Connection=True;ConnectRetryCount=0";
+            // var connection = @"Server=DESKTOP-VVAIN90\SQLEXPRESS;Database=GiftCertificateDB;Trusted_Connection=True;ConnectRetryCount=0";
+            var connection = @"Data Source=192.168.60.186;Initial Catalog=GiftCertificateDB;Integrated Security=False;User Id=SA;Password=Mpgc2@18;MultipleActiveResultSets=True";
             services.AddDbContext<GiftCertificateDBContext>(options => options.UseSqlServer(connection));
         }
 
