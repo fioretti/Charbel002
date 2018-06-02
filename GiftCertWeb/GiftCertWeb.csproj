@@ -6,9 +6,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Purchase\**" />
+    <Compile Remove="Views\Redemption\**" />
+    <Content Remove="Views\Purchase\**" />
+    <Content Remove="Views\Redemption\**" />
+    <EmbeddedResource Remove="Views\Purchase\**" />
+    <EmbeddedResource Remove="Views\Redemption\**" />
+    <None Remove="Views\Purchase\**" />
+    <None Remove="Views\Redemption\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\GcServicesTypeController.cs" />
     <Compile Remove="Controllers\PurchaseController.cs" />
     <Compile Remove="Controllers\RedemptionController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\GcOutlet\Details.cshtml" />
+    <Content Remove="Views\GcOutlet\Edit.cshtml" />
+    <Content Remove="Views\Print\DemoModelPDF.cshtml" />
+    <Content Remove="Views\Print\DemoOrientationPDF.cshtml" />
+    <Content Remove="Views\Print\DemoPageMarginsPDF.cshtml" />
+    <Content Remove="Views\Print\DemoPageNumberPDF.cshtml" />
+    <Content Remove="Views\Print\DemoPageNumberwithCurrentDate.cshtml" />
+    <Content Remove="Views\Print\DemoPageSizePDF.cshtml" />
+    <Content Remove="Views\Print\DemoViewAsPDF.cshtml" />
   </ItemGroup>
 
 
@@ -33,8 +56,6 @@
   <ItemGroup>
     <None Include="Views\GcOutlet\Create.cshtml" />
     <None Include="Views\GcOutlet\Delete.cshtml" />
-    <None Include="Views\GcOutlet\Details.cshtml" />
-    <None Include="Views\GcOutlet\Edit.cshtml" />
     <None Include="Views\GcOutlet\Index.cshtml" />
     <None Include="Views\GcType\Create.cshtml" />
     <None Include="Views\GcType\Delete.cshtml" />
@@ -51,16 +72,6 @@
     <None Include="Views\Outlet\Details.cshtml" />
     <None Include="Views\Outlet\Edit.cshtml" />
     <None Include="Views\Outlet\Index.cshtml" />
-    <None Include="Views\Purchase\Create.cshtml" />
-    <None Include="Views\Purchase\Delete.cshtml" />
-    <None Include="Views\Purchase\Details.cshtml" />
-    <None Include="Views\Purchase\Edit.cshtml" />
-    <None Include="Views\Purchase\Index.cshtml" />
-    <None Include="Views\Redemption\Create.cshtml" />
-    <None Include="Views\Redemption\Delete.cshtml" />
-    <None Include="Views\Redemption\Details.cshtml" />
-    <None Include="Views\Redemption\Edit.cshtml" />
-    <None Include="Views\Redemption\Index.cshtml" />
     <None Include="Views\ServicesType\Create.cshtml" />
     <None Include="Views\ServicesType\Delete.cshtml" />
     <None Include="Views\ServicesType\Details.cshtml" />
