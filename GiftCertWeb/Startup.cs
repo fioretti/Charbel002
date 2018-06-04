@@ -17,18 +17,31 @@ namespace GiftCertWeb
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connection = Configuration.GetConnectionString("DevConnection");
+            if (Environment.IsProduction())
+            {
+                connection = Configuration.GetConnectionString("ProductionConnection");
+            }
+            else if (Environment.IsStaging())
+            {
+                connection = Configuration.GetConnectionString("StagingConnection");
+            }
+           
+              
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connection));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -38,9 +51,7 @@ namespace GiftCertWeb
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
-
-            // var connection = @"Server=DESKTOP-VVAIN90\SQLEXPRESS;Database=GiftCertificateDB;Trusted_Connection=True;ConnectRetryCount=0";
-            var connection = @"Data Source=192.168.60.186;Initial Catalog=GiftCertificateDB;Integrated Security=False;User Id=SA;Password=Mpgc2@18;MultipleActiveResultSets=True";
+                     
             services.AddDbContext<GiftCertificateDBContext>(options => options.UseSqlServer(connection));
         }
 
