@@ -39,7 +39,7 @@ namespace GiftCertWeb.Controllers
                 }
 
 
-                var report = new ViewAsPdf("ViewAsPDF")
+                var report = new ViewAsPdf("DemoViewAsPDF")
                 {
                     PageMargins = { Left = 20, Bottom = 20, Right = 20, Top = 20 },
                     PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,

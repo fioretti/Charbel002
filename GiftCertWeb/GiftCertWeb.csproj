@@ -32,7 +32,6 @@
     <Content Remove="Views\Print\DemoPageNumberPDF.cshtml" />
     <Content Remove="Views\Print\DemoPageNumberwithCurrentDate.cshtml" />
     <Content Remove="Views\Print\DemoPageSizePDF.cshtml" />
-    <Content Remove="Views\Print\DemoViewAsPDF.cshtml" />
   </ItemGroup>
 
 
