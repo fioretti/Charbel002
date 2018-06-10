@@ -58,7 +58,7 @@ namespace GiftCertWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment() || env.IsStaging())
+            if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
@@ -66,7 +66,10 @@ namespace GiftCertWeb
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                // app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseStaticFiles();
