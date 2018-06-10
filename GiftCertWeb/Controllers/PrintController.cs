@@ -21,32 +21,41 @@ namespace GiftCertWeb.Controllers
         // GET: GiftCert/Details/5
         public async Task<IActionResult> Preview(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var giftCert = await _context.GiftCert
+                    .Include(g => g.GcType)
+                    .Include(g => g.ServicesType)
+                    .Include(g => g.GcOutlet).ThenInclude(o => o.Outlet)
+                    .SingleOrDefaultAsync(m => m.GiftCertNo == id);
+                if (giftCert == null)
+                {
+                    return NotFound();
+                }
+
+
+                var report = new ViewAsPdf("ViewAsPDF")
+                {
+                    PageMargins = { Left = 20, Bottom = 20, Right = 20, Top = 20 },
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                    PageSize = Rotativa.AspNetCore.Options.Size.Dle,
+                    Model = giftCert
+                };
+                return report;
+
+                //  return new ViewAsPdf("ViewAsPDF", giftCert)
             }
-
-            var giftCert = await _context.GiftCert
-                .Include(g => g.GcType)
-                .Include(g => g.ServicesType)
-                .Include(g => g.GcOutlet).ThenInclude(o => o.Outlet)
-                .SingleOrDefaultAsync(m => m.GiftCertNo == id);
-            if (giftCert == null)
+            catch (Exception ex)
             {
-                return NotFound();
+
+                throw ex;
             }
-
-
-            var report = new ViewAsPdf("ViewAsPDF")
-            {
-                PageMargins = { Left = 20, Bottom = 20, Right = 20, Top = 20 },
-                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
-                PageSize = Rotativa.AspNetCore.Options.Size.Dle,
-                Model = giftCert
-            };
-            return report;
-
-            //  return new ViewAsPdf("ViewAsPDF", giftCert);          
+          ;          
         }
 
         public IActionResult DemoViewAsPDF()
