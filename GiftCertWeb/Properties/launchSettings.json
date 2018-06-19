@@ -11,10 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:44323/",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Staging"
-      }
+      "launchUrl": "https://localhost:44323/"
     },
     "GiftCertWeb": {
       "commandName": "Project",
