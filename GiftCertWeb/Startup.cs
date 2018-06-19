@@ -12,6 +12,7 @@ using GiftCertWeb.Data;
 using GiftCertWeb.Models;
 using GiftCertWeb.Services;
 using Rotativa.AspNetCore;
+using NToastNotify;
 
 namespace GiftCertWeb
 {
@@ -50,8 +51,8 @@ namespace GiftCertWeb
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddMvc();
-                     
+            services.AddMvc().AddNToastNotify();
+
             services.AddDbContext<GiftCertificateDBContext>(options => options.UseSqlServer(connection));
         }
 
@@ -75,6 +76,7 @@ namespace GiftCertWeb
             app.UseStaticFiles();
 
             app.UseAuthentication();
+            app.UseNToastNotify();
 
             app.UseMvc(routes =>
             {
