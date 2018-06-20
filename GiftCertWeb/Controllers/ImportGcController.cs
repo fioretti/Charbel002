@@ -185,13 +185,18 @@ namespace GiftCertWeb.Controllers
                 }
 
                 if (!isValid)
-                    ModelState.AddModelError(string.Empty, errorMsg);                          
+                    ModelState.AddModelError(string.Empty, errorMsg);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
-            return View("Index");
+
+            if (!ModelState.IsValid)
+                return View("Index");
+
+            _toastNotification.AddSuccessToastMessage("Imported successfully");
+            return RedirectToAction("Index", "GiftCert");
         }
 
         bool IsSequential(int[] array)
