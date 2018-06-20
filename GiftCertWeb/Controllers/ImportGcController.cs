@@ -145,56 +145,69 @@ namespace GiftCertWeb.Controllers
         [HttpPost("ImportGc")]
         public async Task<IActionResult> Post(List<IFormFile> files)
         {
-            var errorMsg = string.Empty;
-            var isValid = true;
-
-            if (files.Count < 1)
+            try
             {
-                errorMsg = "File is required.";
-                isValid = false;
-            }
+                var errorMsg = string.Empty;
+                var isValid = true;
 
-            if (isValid)
-            {
-                long size = files.Sum(f => f.Length);
-
-                var filePath = Path.GetTempFileName();
-
-                foreach (var formFile in files)
+                if (files.Count < 1)
                 {
-                    if (formFile.Length > 0)
+                    errorMsg = "File is required.";
+                    isValid = false;
+                }
+
+                if (isValid)
+                {
+                    long size = files.Sum(f => f.Length);
+
+                    var filePath = Path.GetTempFileName();
+
+                    foreach (var formFile in files)
                     {
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        if (formFile.Length > 0)
                         {
-                            await formFile.CopyToAsync(stream);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await formFile.CopyToAsync(stream);
+                            }
+                        }
+                    }
+
+                    var response = BulkCopy(filePath);
+
+                    if (!response.IsValid)
+                    {
+                        foreach (var msg in response.ErrorMsg)
+                        {
+                            ModelState.AddModelError(string.Empty, msg);
                         }
                     }
                 }
 
-                var response = BulkCopy(filePath);
-
-                if (!response.IsValid)
-                {
-                    foreach (var msg in response.ErrorMsg)
-                    {
-                        ModelState.AddModelError(string.Empty, msg);
-                    }
-                }
+                if (!isValid)
+                    ModelState.AddModelError(string.Empty, errorMsg);                          
             }
-
-            if (!isValid)
-                ModelState.AddModelError(string.Empty, errorMsg);
-            //   _toastNotification.AddErrorToastMessage("Error", errorMsg);
-
-            //return Ok(new { count = files.Count, size, filePath });
-            //   return RedirectToAction("Index", "GiftCert");
-            //  return RedirectToAction("Index", "ImportGc");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
             return View("Index");
         }
 
         bool IsSequential(int[] array)
         {
             return array.Zip(array.Skip(1), (a, b) => (a + 1) == b).All(x => x);
+        }
+
+        public static bool IsCharDigit(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
         }
 
         public ValidationResponse BulkCopy(string filePath)
@@ -306,10 +319,29 @@ namespace GiftCertWeb.Controllers
                     }
 
                     //gctype contains only
-                    var desiredItems = new List<string> { "regular gc", "promotional gc", "corporate gc" };
-                    if (gcList.Select(m => m.GcTypeName.ToLower().Trim()).Except(desiredItems).Any())
+                    var gcTypeItems = new List<string> { "regular gc", "promotional gc", "corporate gc" };
+                    if (gcList.Select(m => m.GcTypeName.ToLower().Trim()).Except(gcTypeItems).Any())
                     {
                         response.ErrorMsg.Add("GC Type should contains only Regular GC, Promotional GC and Corporate GC");
+                        response.IsValid = false;
+                        return response;
+                    }
+
+                    //value should be in whole number
+                    var isDigit = gcList.Select(m => m.Value.ToString().Trim()).ToArray().All(c => IsCharDigit(c));
+                    if (!isDigit)
+                    {
+                        response.ErrorMsg.Add("Value should be in whole number.");
+                        response.IsValid = false;
+                        return response;
+                    }
+
+                    //Outlets - Promotional GC:
+                    var outletItems = new List<string> { "café marco", "wellness zone spa", "el viento", "lobby lounge" };
+                    var outlets = gcList.SelectMany(m => m.Outlets).ToList();
+                    if (outlets.Where(o => !string.IsNullOrEmpty(o.Name)).Select(o => o.Name.ToLower().Trim()).Except(outletItems).Any())
+                    {
+                        response.ErrorMsg.Add("Promotional GC should contains only Café Marco, Wellness Zone Spa, Lobby Lounge and El Viento");
                         response.IsValid = false;
                         return response;
                     }
