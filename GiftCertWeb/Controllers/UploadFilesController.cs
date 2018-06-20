@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using NToastNotify;
 using OfficeOpenXml;
+
 
 namespace GiftCertWeb.Controllers
 {
@@ -20,56 +22,18 @@ namespace GiftCertWeb.Controllers
     {
         public static IConfiguration Configuration;
         private readonly IHostingEnvironment _hostingEnvironment;
-        public UploadFilesController(IHostingEnvironment hostingEnvironment)
+        private readonly IToastNotification _toastNotification;
+
+        public UploadFilesController(IHostingEnvironment hostingEnvironment, IToastNotification toastNotification)
         {
             _hostingEnvironment = hostingEnvironment;
+            _toastNotification = toastNotification;
         }
 
-        #region snippet1
-        [HttpPost("UploadFiles")]
-        public async Task<IActionResult> Post(List<IFormFile> files)
+        private ValidationResponse ValidateExcelFile(string filePath)
         {
-            long size = files.Sum(f => f.Length);
+            var response = new ValidationResponse();
 
-            // full path to file in temp location
-            var filePath = Path.GetTempFileName();
-
-            foreach (var formFile in files)
-            {
-                if (formFile.Length > 0)
-                {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await formFile.CopyToAsync(stream);
-                    }
-                }
-            }
-
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
-
-            BulkCopy(filePath);
-
-            //return Ok(new { count = files.Count, size, filePath });
-            return RedirectToAction("Index", "GiftCert");
-        }
-
-        public void BulkCopy(string filePath)
-        {
-
-            // TODO: Extract this to a service class
-            // load from excel
-
-            var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
-            string connectionstring = Configuration["ConnectionStrings:DefaultConnection"];
-
-          //  var filePath = @"D:/GcDetails.xlsx";
             FileInfo file = new FileInfo(filePath);
 
             using (ExcelPackage package = new ExcelPackage(file))
@@ -86,8 +50,8 @@ namespace GiftCertWeb.Controllers
                 {
                     for (int col = 1; col <= ColCount; col++)
                     {
-                        if (col == 1 && worksheet.Cells[row, col].Value == null)
-                            break;
+                        //if (col == 1 && worksheet.Cells[row, col].Value == null)
+                        //    break;
 
                         if (worksheet.Cells[row, col].Value != null)
                             rawText += worksheet.Cells[row, col].Value.ToString() + "|";
@@ -99,123 +63,334 @@ namespace GiftCertWeb.Controllers
 
                 records = new List<string>(rawText.Split('\n'));
 
-                var gcList = new List<GiftCertDto>();
-
                 foreach (string record in records)
                 {
                     if (string.IsNullOrEmpty(record))
-                        break;
+                        continue;
 
                     var gc = new GiftCertDto();
-
+                    string[] servicesRecords = new List<string>().ToArray();
+                    string[] outletRecords = new List<string>().ToArray();
                     string[] textpart = record.Split('|');
 
-                    if (textpart[0] != string.Empty)
-                        gc.GiftCertNo = Convert.ToInt32(textpart[0]);
-                    gc.GcTypeName = textpart[1];
-                    if (textpart[2] != string.Empty)
-                        gc.Value = Convert.ToDecimal(textpart[2]);
-                    gc.Note = textpart[4];
-                    gc.DtiPermitNo = textpart[5];
-                    if (textpart[6] != string.Empty)
-                        gc.ExpirationDate = Convert.ToDateTime(textpart[6]);
+                    gc.GiftCertNo = !string.IsNullOrEmpty(textpart[0]) ? Convert.ToInt32(textpart[0]) : 0;
+                    gc.GcTypeName = !string.IsNullOrEmpty(textpart[1]) ? textpart[1] : string.Empty;
+                    gc.Value = !string.IsNullOrEmpty(textpart[2]) ? Convert.ToDecimal(textpart[2]) : 0;
+                    gc.DtiPermitNo = !string.IsNullOrEmpty(textpart[5]) ? textpart[5] : string.Empty;
+                    gc.ExpirationDate = !string.IsNullOrEmpty(textpart[6]) ? Convert.ToDateTime(textpart[6]) : DateTime.MinValue;
+                    if (!string.IsNullOrEmpty(textpart[3]))
+                        servicesRecords = textpart[3].Split(';');
+                    if (!string.IsNullOrEmpty(textpart[7]))
+                        outletRecords = textpart[7].Split(';');
 
-                    var servicesList = new List<ServicesTypeDto>();
-                    string[] servicesRecords = textpart[3].Split(';');
-
-                    foreach (string servicesRecord in servicesRecords)
+                    if (string.IsNullOrEmpty(gc.GcTypeName))
                     {
-                        var servicesType = new ServicesTypeDto();
-                        servicesType.Name = servicesRecord;
-                        servicesList.Add(servicesType);
+                        response.ErrorMsg.Add("GC Type is required.");
+                        response.IsValid = false;
+                        break;
                     }
 
-                    var outletList = new List<OutletDto>();
-                    string[] outletRecords = textpart[7].Split(';');
-
-                    foreach (string outletRecord in outletRecords)
+                    if (gc.GcTypeName.Trim().ToLower() == "regular gc")
                     {
-                        var outlet = new OutletDto();
-                        outlet.Name = outletRecord;
-                        outletList.Add(outlet);
+                        if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0)
+                            response.ErrorMsg.Add("Regular GC requires Gift Cert No, GC Type, Value and Services.");
+                        if (!string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate != DateTime.MinValue || outletRecords.Count() > 0)
+                            response.ErrorMsg.Add("Regular GC restricts DTI Permit No, Expiration Date and Oulet.");
                     }
 
-                    gc.Services = servicesList;
-                    gc.Outlets = outletList;
+                    if (gc.GcTypeName.Trim().ToLower() == "corporate gc")
+                    {
+                        if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || gc.ExpirationDate == DateTime.MinValue)
+                            response.ErrorMsg.Add("Corporate GC requires Gift Cert No, GC Type, Value, Expiration Date and Services.");
+                        if (!string.IsNullOrEmpty(gc.DtiPermitNo) || outletRecords.Count() > 0)
+                            response.ErrorMsg.Add("Corporate GC restricts DTI Permit No and Oulet.");
+                    }
+
+                    if (gc.GcTypeName.Trim().ToLower() == "promotional gc")
+                    {
+                        if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate == DateTime.MinValue || outletRecords.Count() == 0)
+                            response.ErrorMsg.Add("Promotional GC requires all fields.");
+                    }
+
+                    if (response.ErrorMsg.Count > 0)
+                    {
+                        response.IsValid = false;
+                        break;
+                    }
 
 
-                    gcList.Add(gc);
+
+                    //if (textpart[0] != string.Empty)
+                    //    gc.GiftCertNo = Convert.ToInt32(textpart[0]);
+                    //gc.GcTypeName = textpart[1];
+                    //if (textpart[2] != string.Empty)
+                    //    gc.Value = Convert.ToDecimal(textpart[2]);
+                    //gc.Note = textpart[4];
+                    //gc.DtiPermitNo = textpart[5];
+                    //if (textpart[6] != string.Empty)
+                    //    gc.ExpirationDate = Convert.ToDateTime(textpart[6]);
+
+                    //var servicesList = new List<ServicesTypeDto>();
+                    //string[] servicesRecords = textpart[3].Split(';');
+
+                    //foreach (string servicesRecord in servicesRecords)
+                    //{
+                    //    var servicesType = new ServicesTypeDto();
+                    //    servicesType.Name = servicesRecord;
+                    //    servicesList.Add(servicesType);
+                    //}
+
+                    //var outletList = new List<OutletDto>();
+                    //string[] outletRecords = textpart[7].Split(';');
+
+                    //foreach (string outletRecord in outletRecords)
+                    //{
+                    //    var outlet = new OutletDto();
+                    //    outlet.Name = outletRecord;
+                    //    outletList.Add(outlet);
+                    //}
+
+                    //gc.Services = servicesList;
+                    //gc.Outlets = outletList;
+
+
+                    //gcList.Add(gc);
 
                 }
+            }
 
-                //sql entity
-                var giftCerts = new List<GiftCert>();
-                var gcOutlets = new List<GcOutlet>();
-                var services = new List<ServicesType>();
+            return response;
 
-                foreach (var gc in gcList)
+        }
+
+        #region snippet1
+        [HttpPost("UploadFiles")]
+        public async Task<IActionResult> Post(List<IFormFile> files)
+        {
+            var errorMsg = string.Empty;
+            var isValid = true;
+
+            if (files.Count < 1)
+            {
+                errorMsg = "File is required.";
+                isValid = false;
+            }
+
+
+
+            if (isValid)
+            {
+
+                long size = files.Sum(f => f.Length);
+
+                // full path to file in temp location
+                var filePath = Path.GetTempFileName();
+
+
+
+                foreach (var formFile in files)
                 {
-                    var giftCert = new GiftCert();
-
-                    if (gc.GcTypeName.Replace(" ", "") == GcTypeOptions.RegularGC.ToString())
-                        giftCert.GcTypeId = (int)GcTypeOptions.RegularGC;
-                    if (gc.GcTypeName.Replace(" ", "") == GcTypeOptions.PromotionalGC.ToString())
-                        giftCert.GcTypeId = (int)GcTypeOptions.PromotionalGC;
-                    if (gc.GcTypeName.Replace(" ", "") == GcTypeOptions.CorporateGC.ToString())
-                        giftCert.GcTypeId = (int)GcTypeOptions.CorporateGC;
-
-                    giftCert.Value = gc.Value;
-                    giftCert.DtiPermitNo = gc.DtiPermitNo;
-                    giftCert.ExpirationDate = gc.ExpirationDate;
-                    giftCert.QrCode = Guid.NewGuid().ToString();
-                    giftCert.GiftCertNo = gc.GiftCertNo;
-                    giftCert.Note = gc.Note;
-
-                    giftCert.LastModifiedBy = "leila";
-                    giftCert.CreatedDate = DateTime.Now;
-                    giftCert.ModifiedDate = DateTime.Now;
-
-                    giftCerts.Add(giftCert);
-
-                    //gcoutlet                  
-                    foreach (var outlet in gc.Outlets)
+                    if (formFile.Length > 0)
                     {
-                        if (string.IsNullOrEmpty(outlet.Name))
-                            break;
-
-                        var gcOutlet = new GcOutlet();
-                        if (outlet.Name.Replace(" ", "") == OutletOptions.CaféMarco.ToString())
-                            gcOutlet.OutletId = (int)OutletOptions.CaféMarco;
-                        if (outlet.Name.Replace(" ", "") == OutletOptions.ElViento.ToString())
-                            gcOutlet.OutletId = (int)OutletOptions.ElViento;
-                        if (outlet.Name.Replace(" ", "") == OutletOptions.LobbyLounge.ToString())
-                            gcOutlet.OutletId = (int)OutletOptions.LobbyLounge;
-
-                        gcOutlet.GiftCertNo = gc.GiftCertNo;
-                        gcOutlets.Add(gcOutlet);
-                    }
-
-                    //services
-                    foreach (var service in gc.Services)
-                    {
-                        if (string.IsNullOrEmpty(service.Name))
-                            break;
-
-                        var servicesType = new ServicesType();
-
-                        servicesType.GiftCertNo = gc.GiftCertNo;
-                        servicesType.Name = service.Name;
-                        servicesType.Active = true;
-                        servicesType.LastModifiedBy = "leila";
-                        servicesType.CreatedDate = DateTime.Now;
-                        servicesType.ModifiedDate = DateTime.Now;
-
-                        services.Add(servicesType);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await formFile.CopyToAsync(stream);
+                        }
                     }
                 }
 
-                var gcParameters = new[]
-                   {
+                // process uploaded files
+                // Don't rely on or trust the FileName property without validation.
+
+                var response = BulkCopy(filePath);
+
+                if (!response.IsValid)
+                {
+                    foreach (var msg in response.ErrorMsg)
+                    {
+                        ModelState.AddModelError(string.Empty, msg);
+                        //   _toastNotification.AddErrorToastMessage(msg, "Error");
+                    }                  
+                }
+
+            }
+
+            if (!isValid)
+                ModelState.AddModelError(string.Empty, errorMsg);
+            //   _toastNotification.AddErrorToastMessage("Error", errorMsg);
+
+            //return Ok(new { count = files.Count, size, filePath });
+            //   return RedirectToAction("Index", "GiftCert");
+            return RedirectToAction("Index", "ImportGc");
+        }
+
+        public ValidationResponse BulkCopy(string filePath)
+        {
+            var response = new ValidationResponse();
+
+            response = ValidateExcelFile(filePath);
+
+            if (response.IsValid)
+            {
+                // TODO: Extract this to a service class
+                // load from excel
+
+                var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+                builder.AddEnvironmentVariables();
+                Configuration = builder.Build();
+                string connectionstring = Configuration["ConnectionStrings:DefaultConnection"];
+
+                //  var filePath = @"D:/GcDetails.xlsx";
+                FileInfo file = new FileInfo(filePath);
+
+                using (ExcelPackage package = new ExcelPackage(file))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                    int rowCount = worksheet.Dimension.Rows;
+                    int ColCount = worksheet.Dimension.Columns;
+
+                    var rawText = string.Empty;
+                    List<string> records = new List<string>();
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        for (int col = 1; col <= ColCount; col++)
+                        {
+                            if (col == 1 && worksheet.Cells[row, col].Value == null)
+                                break;
+
+                            if (worksheet.Cells[row, col].Value != null)
+                                rawText += worksheet.Cells[row, col].Value.ToString() + "|";
+                            else
+                                rawText += "|";
+                        }
+                        rawText += "\n";
+                    }
+
+                    records = new List<string>(rawText.Split('\n'));
+
+                    var gcList = new List<GiftCertDto>();
+
+                    foreach (string record in records)
+                    {
+                        if (string.IsNullOrEmpty(record))
+                            break;
+
+                        var gc = new GiftCertDto();
+
+                        string[] textpart = record.Split('|');
+
+                        if (textpart[0] != string.Empty)
+                            gc.GiftCertNo = Convert.ToInt32(textpart[0]);
+                        gc.GcTypeName = textpart[1];
+                        if (textpart[2] != string.Empty)
+                            gc.Value = Convert.ToDecimal(textpart[2]);
+                        gc.Note = textpart[4];
+                        gc.DtiPermitNo = textpart[5];
+                        if (textpart[6] != string.Empty)
+                            gc.ExpirationDate = Convert.ToDateTime(textpart[6]);
+
+                        var servicesList = new List<ServicesTypeDto>();
+                        string[] servicesRecords = textpart[3].Split(';');
+
+                        foreach (string servicesRecord in servicesRecords)
+                        {
+                            var servicesType = new ServicesTypeDto();
+                            servicesType.Name = servicesRecord;
+                            servicesList.Add(servicesType);
+                        }
+
+                        var outletList = new List<OutletDto>();
+                        string[] outletRecords = textpart[7].Split(';');
+
+                        foreach (string outletRecord in outletRecords)
+                        {
+                            var outlet = new OutletDto();
+                            outlet.Name = outletRecord;
+                            outletList.Add(outlet);
+                        }
+
+                        gc.Services = servicesList;
+                        gc.Outlets = outletList;
+
+
+                        gcList.Add(gc);
+
+                    }
+
+                    //sql entity
+                    var giftCerts = new List<GiftCert>();
+                    var gcOutlets = new List<GcOutlet>();
+                    var services = new List<ServicesType>();
+
+                    foreach (var gc in gcList)
+                    {
+                        var giftCert = new GiftCert();
+
+                        if (gc.GcTypeName.Replace(" ", "") == GcTypeOptions.RegularGC.ToString())
+                            giftCert.GcTypeId = (int)GcTypeOptions.RegularGC;
+                        if (gc.GcTypeName.Replace(" ", "") == GcTypeOptions.PromotionalGC.ToString())
+                            giftCert.GcTypeId = (int)GcTypeOptions.PromotionalGC;
+                        if (gc.GcTypeName.Replace(" ", "") == GcTypeOptions.CorporateGC.ToString())
+                            giftCert.GcTypeId = (int)GcTypeOptions.CorporateGC;
+
+                        giftCert.Value = gc.Value;
+                        giftCert.DtiPermitNo = gc.DtiPermitNo;
+                        giftCert.ExpirationDate = gc.ExpirationDate;
+                        giftCert.QrCode = Guid.NewGuid().ToString();
+                        giftCert.GiftCertNo = gc.GiftCertNo;
+                        giftCert.Note = gc.Note;
+
+                        giftCert.LastModifiedBy = "leila";
+                        giftCert.CreatedDate = DateTime.Now;
+                        giftCert.ModifiedDate = DateTime.Now;
+
+                        giftCerts.Add(giftCert);
+
+                        //gcoutlet                  
+                        foreach (var outlet in gc.Outlets)
+                        {
+                            if (string.IsNullOrEmpty(outlet.Name))
+                                break;
+
+                            var gcOutlet = new GcOutlet();
+                            if (outlet.Name.Replace(" ", "") == OutletOptions.CaféMarco.ToString())
+                                gcOutlet.OutletId = (int)OutletOptions.CaféMarco;
+                            if (outlet.Name.Replace(" ", "") == OutletOptions.ElViento.ToString())
+                                gcOutlet.OutletId = (int)OutletOptions.ElViento;
+                            if (outlet.Name.Replace(" ", "") == OutletOptions.LobbyLounge.ToString())
+                                gcOutlet.OutletId = (int)OutletOptions.LobbyLounge;
+
+                            gcOutlet.GiftCertNo = gc.GiftCertNo;
+                            gcOutlets.Add(gcOutlet);
+                        }
+
+                        //services
+                        foreach (var service in gc.Services)
+                        {
+                            if (string.IsNullOrEmpty(service.Name))
+                                break;
+
+                            var servicesType = new ServicesType();
+
+                            servicesType.GiftCertNo = gc.GiftCertNo;
+                            servicesType.Name = service.Name;
+                            servicesType.Active = true;
+                            servicesType.LastModifiedBy = "leila";
+                            servicesType.CreatedDate = DateTime.Now;
+                            servicesType.ModifiedDate = DateTime.Now;
+
+                            services.Add(servicesType);
+                        }
+                    }
+
+                    var gcParameters = new[]
+                       {
                         nameof(GiftCert.GcTypeId),
                         nameof(GiftCert.Value),
                         nameof(GiftCert.IssuanceDate),
@@ -230,15 +405,15 @@ namespace GiftCertWeb.Controllers
                         nameof(GiftCert.GiftCertNo)
                     };
 
-                var gcOutletParameters = new[]
-                  {
+                    var gcOutletParameters = new[]
+                      {
                         nameof(GcOutlet.Id),
                         nameof(GcOutlet.OutletId),
                         nameof(GcOutlet.GiftCertNo)
                   };
 
-                var serviceTypeParameters = new[]
-                {
+                    var serviceTypeParameters = new[]
+                    {
                         nameof(ServicesType.Id),
                         nameof(ServicesType.LastModifiedBy),
                         nameof(ServicesType.CreatedDate),
@@ -248,30 +423,32 @@ namespace GiftCertWeb.Controllers
                         nameof(ServicesType.GiftCertNo)
                   };
 
-              
-                using (var sqlcopy = new SqlBulkCopy(connectionstring, SqlBulkCopyOptions.Default))
-                {
-                    sqlcopy.BatchSize = 500;
 
-                    sqlcopy.DestinationTableName = "[GiftCert]";
-                    using (var reader = ObjectReader.Create(giftCerts, gcParameters))
+                    using (var sqlcopy = new SqlBulkCopy(connectionstring, SqlBulkCopyOptions.Default))
                     {
-                        sqlcopy.WriteToServer(reader);
-                    }
+                        sqlcopy.BatchSize = 500;
 
-                    sqlcopy.DestinationTableName = "[GcOutlet]";
-                    using (var reader = ObjectReader.Create(gcOutlets, gcOutletParameters))
-                    {
-                        sqlcopy.WriteToServer(reader);
-                    }
+                        sqlcopy.DestinationTableName = "[GiftCert]";
+                        using (var reader = ObjectReader.Create(giftCerts, gcParameters))
+                        {
+                            sqlcopy.WriteToServer(reader);
+                        }
 
-                    sqlcopy.DestinationTableName = "[ServicesType]";
-                    using (var reader = ObjectReader.Create(services, serviceTypeParameters))
-                    {
-                        sqlcopy.WriteToServer(reader);
+                        sqlcopy.DestinationTableName = "[GcOutlet]";
+                        using (var reader = ObjectReader.Create(gcOutlets, gcOutletParameters))
+                        {
+                            sqlcopy.WriteToServer(reader);
+                        }
+
+                        sqlcopy.DestinationTableName = "[ServicesType]";
+                        using (var reader = ObjectReader.Create(services, serviceTypeParameters))
+                        {
+                            sqlcopy.WriteToServer(reader);
+                        }
                     }
                 }
-            }           
+            }
+            return response;
         }
         #endregion
     }

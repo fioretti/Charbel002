@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GiftCertWeb.Models
 {
@@ -13,6 +14,7 @@ namespace GiftCertWeb.Models
         public bool? Active { get; set; }
         public string Remarks { get; set; }
         public string PaymentMode { get; set; }
+        [Required]
         public string CcNumber { get; set; }
         public DateTime? ExpirationDate { get; set; }
         public string CardType { get; set; }
