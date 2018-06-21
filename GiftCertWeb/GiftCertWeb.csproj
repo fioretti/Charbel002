@@ -6,20 +6,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\GcPurchases\**" />
     <Compile Remove="Views\Purchase\**" />
     <Compile Remove="Views\Redemption\**" />
+    <Content Remove="Views\GcPurchases\**" />
     <Content Remove="Views\Purchase\**" />
     <Content Remove="Views\Redemption\**" />
+    <EmbeddedResource Remove="Views\GcPurchases\**" />
     <EmbeddedResource Remove="Views\Purchase\**" />
     <EmbeddedResource Remove="Views\Redemption\**" />
+    <None Remove="Views\GcPurchases\**" />
     <None Remove="Views\Purchase\**" />
     <None Remove="Views\Redemption\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\GcPurchasesController.cs" />
     <Compile Remove="Controllers\GcServicesTypeController.cs" />
     <Compile Remove="Controllers\PurchaseController.cs" />
     <Compile Remove="Controllers\RedemptionController.cs" />
+    <Compile Remove="Controllers\UploadFilesController.cs" />
   </ItemGroup>
 
   <ItemGroup>

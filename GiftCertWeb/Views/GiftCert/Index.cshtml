@@ -1,5 +1,4 @@
-﻿@model IEnumerable<GiftCertWeb.Models.GiftCert>
-
+﻿@model GiftCertWeb.Services.PaginatedList<GiftCertWeb.Models.GiftCert>
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,66 +6,96 @@
 <h4>Gift Certs</h4>
 <hr />
 
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Gift Cert No: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" />
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
 
             <th>
-                @Html.DisplayNameFor(model => model.GiftCertNo)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GiftCertNoSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Gift Cert No</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DtiPermitNo)
+                DTI Permit No
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GcType)
+                GC Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IssuanceDate)
+                Issuance Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ExpirationDate)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ExpDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Enrollment Date</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Value)
+                Value
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>         
+                Status
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.GiftCertNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DtiPermitNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GcType.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IssuanceDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpirationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Value)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GiftCertNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DtiPermitNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GcType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IssuanceDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
 
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.GiftCertNo">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.GiftCertNo">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.GiftCertNo">Delete</a> |
-                <a asp-controller="Print" asp-action="Preview" asp-route-id="@item.GiftCertNo" target="_blank">Print Preview</a>
-            </td>
-        </tr>
-}
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.GiftCertNo">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.GiftCertNo">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.GiftCertNo">Delete</a> |
+                    <a asp-controller="Print" asp-action="Preview" asp-route-id="@item.GiftCertNo" target="_blank">Print Preview</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using GiftCertWeb.Models;
 using System.Collections.Generic;
 using System;
+using GiftCertWeb.Services;
 
 namespace GiftCertWeb.Controllers
 {
@@ -19,15 +20,51 @@ namespace GiftCertWeb.Controllers
         }
 
         // GET: GiftCert
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var GiftCertificateDBContext = _context.GiftCert.Include(g => g.GcType)
-                                        .Include(g => g.ServicesType)
-                                         .Include(g => g.GcOutlet);
+            IQueryable<GiftCert> giftCerts;
 
-            var giftCerts = await GiftCertificateDBContext.ToListAsync();
+            ViewData["GiftCertNoSortParm"] = String.IsNullOrEmpty(sortOrder) ? "gc_no_desc" : "";
+            ViewData["ExpDateSortParm"] = sortOrder == "ExpDate" ? "exp_date_desc" : "ExpDate";
 
-            return View(giftCerts);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            giftCerts = _context.GiftCert.Include(g => g.GcType)
+                                       .Include(g => g.ServicesType)
+                                        .Include(g => g.GcOutlet);
+                      
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                giftCerts = giftCerts.Where(m => m.GiftCertNo.ToString().Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "gc_no_desc":
+                     giftCerts = giftCerts.OrderByDescending(s => s.GiftCertNo);
+                    break;
+                case "ExpDate":
+                    giftCerts = giftCerts.OrderBy(s => s.ExpirationDate);
+                    break;
+                case "date_desc":
+                    giftCerts = giftCerts.OrderByDescending(s => s.ExpirationDate);
+                    break;
+                default:
+                    giftCerts = giftCerts.OrderBy(s => s.GiftCertNo);
+                    break;
+            }
+
+            int pageSize = 10;            
+            return View(await PaginatedList<GiftCert>.CreateAsync(giftCerts.AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: GiftCert/Details/5
