@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FastMember;
 using GiftCertWeb.Models;
 using GiftCertWeb.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ using OfficeOpenXml;
 
 namespace GiftCertWeb.Controllers
 {
+    [Authorize]
     public class ImportGcController : Controller
     {
         public static IConfiguration Configuration;

@@ -7,9 +7,11 @@ using GiftCertWeb.Models;
 using System.Collections.Generic;
 using System;
 using GiftCertWeb.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GiftCertWeb.Controllers
 {
+    [Authorize]
     public class GiftCertController : Controller
     {
         private readonly GiftCertificateDBContext _context;

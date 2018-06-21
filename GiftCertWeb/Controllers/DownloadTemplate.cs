@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
 namespace GiftCertWeb.Controllers
 {
+    [Authorize]
     public class DownloadTemplate : Controller
     {
         public static IConfiguration Configuration;

@@ -65,7 +65,8 @@ namespace GiftCertWeb.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return RedirectToLocal(returnUrl);
+                    //return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index", "GiftCert");
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -247,7 +248,7 @@ namespace GiftCertWeb.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(HomeController.Index), "GiftCert");
         }
 
         [HttpPost]

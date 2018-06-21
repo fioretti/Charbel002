@@ -32,12 +32,22 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="GiftCert" asp-action="Create">New GC</a></li>
-                    <li><a asp-area="" asp-controller="GiftCert" asp-action="Index">Gift Certs</a></li>
-                    <li><a asp-area="" asp-controller="Redemption" asp-action="Index">Redemption</a></li>
-                    <li><a asp-area="" asp-controller="Purchase" asp-action="Index">Purchase</a></li>
-                    <li><a asp-area="" asp-controller="DownloadTemplate" asp-action="Index">Download Bulk Upload's Template</a></li>
-                    <li><a asp-area="" asp-controller="ImportGc" asp-action="Index">Import GC</a></li>
+                    @inject SignInManager<ApplicationUser> SignInManager
+                    @if (SignInManager.IsSignedIn(User))
+    {
+                <li><a asp-area="" asp-controller="GiftCert" asp-action="Create">New GC</a></li>
+                <li><a asp-area="" asp-controller="GiftCert" asp-action="Index">Gift Certs</a></li>
+                <li><a asp-area="" asp-controller="GiftCert" asp-action="Index">Redemption</a></li>
+                <li><a asp-area="" asp-controller="GiftCert" asp-action="Index">Purchase</a></li>
+                <li><a asp-area="" asp-controller="DownloadTemplate" asp-action="Index">Download Bulk Upload's Template</a></li>
+                <li><a asp-area="" asp-controller="ImportGc" asp-action="Index">Import GC</a></li>
+}
+else
+{
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+}
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
