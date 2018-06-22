@@ -279,6 +279,20 @@ namespace GiftCertWeb.Controllers
             return response;
         }
 
+        private string ServiceSetVar(string servicesRecord, GiftCertDto gc, List<OutletDto> outletList)
+        {
+            var outlet = outletList.FirstOrDefault() != null ? outletList.FirstOrDefault().Name : string.Empty;
+            servicesRecord = servicesRecord.Replace("@Value", "@Value".ToLower());
+            servicesRecord = servicesRecord.Replace("@Outlet", "@Outlet".ToLower());
+            servicesRecord = servicesRecord.Replace("@ExpirationDate", "@ExpirationDate".ToLower());
+
+            servicesRecord = servicesRecord.Replace("@Value".ToLower(), gc.Value.ToString());
+            servicesRecord = servicesRecord.Replace("@Outlet".ToLower(), outlet);
+            servicesRecord = servicesRecord.Replace("@ExpirationDate".ToLower(), gc.ExpirationDate.ToString());
+
+            return servicesRecord;
+        }
+
         public ValidationResponse BulkCopy(string filePath)
         {
             var response = new ValidationResponse();
@@ -366,16 +380,6 @@ namespace GiftCertWeb.Controllers
                     if (textpart[7] != string.Empty)
                         gc.ExpirationDate = Convert.ToDateTime(textpart[7]);
 
-                    var servicesList = new List<ServicesTypeDto>();
-                    string[] servicesRecords = textpart[4].Split(';');
-
-                    foreach (string servicesRecord in servicesRecords)
-                    {
-                        var servicesType = new ServicesTypeDto();
-                        servicesType.Name = servicesRecord;
-                        servicesList.Add(servicesType);
-                    }
-
                     var outletList = new List<OutletDto>();
                     string[] outletRecords = textpart[8].Split(';');
 
@@ -386,6 +390,16 @@ namespace GiftCertWeb.Controllers
                         outletList.Add(outlet);
                     }
 
+                    var servicesList = new List<ServicesTypeDto>();
+                    string[] servicesRecords = textpart[4].Split(';');
+
+                    foreach (string servicesRecord in servicesRecords)
+                    {
+                        var servicesType = new ServicesTypeDto();
+                        servicesType.Name = ServiceSetVar(servicesRecord, gc, outletList);
+                        servicesList.Add(servicesType);
+                    }
+                                     
                     //expiry date greater than purchase 
                     if (gc.ExpirationDate != null && gc.IssuanceDate != null)
                     {
