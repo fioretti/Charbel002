@@ -14,6 +14,7 @@ namespace GiftCertWeb.Models.Dto
         public string Note { get; set; }
         public string DtiPermitNo { get; set; }
         public DateTime? ExpirationDate { get; set; }
+        public DateTime? IssuanceDate { get; set; }        
         public List<OutletDto> Outlets { get; set; }
     }
 }
