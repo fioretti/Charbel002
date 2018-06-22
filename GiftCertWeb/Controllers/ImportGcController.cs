@@ -79,9 +79,11 @@ namespace GiftCertWeb.Controllers
                 //limit reocrds to 100
                 if (records.Count > 100)
                     response.ErrorMsg.Add("The maximum number of records allowed (100) has been exceeded.");
-               
-                foreach (string record in records)
+
+                for (int i = 0; i < records.Count; i++)
                 {
+                    var record = records[i];
+                    var lineNumber = i + 2;
                     if (string.IsNullOrEmpty(record))
                         continue;
 
@@ -95,7 +97,7 @@ namespace GiftCertWeb.Controllers
                     gc.Value = !string.IsNullOrEmpty(textpart[2]) ? Convert.ToDecimal(textpart[2]) : 0;
                     gc.IssuanceDate = !string.IsNullOrEmpty(textpart[3]) ? Convert.ToDateTime(textpart[3]) : DateTime.MinValue;
                     gc.DtiPermitNo = !string.IsNullOrEmpty(textpart[6]) ? textpart[6] : string.Empty;
-                                       gc.ExpirationDate = !string.IsNullOrEmpty(textpart[7]) ? Convert.ToDateTime(textpart[7]) : DateTime.MinValue;
+                    gc.ExpirationDate = !string.IsNullOrEmpty(textpart[7]) ? Convert.ToDateTime(textpart[7]) : DateTime.MinValue;
                     if (!string.IsNullOrEmpty(textpart[4]))
                         servicesRecords = textpart[4].Split(';');
                     if (!string.IsNullOrEmpty(textpart[8]))
@@ -103,31 +105,31 @@ namespace GiftCertWeb.Controllers
 
                     var giftCert = _context.GiftCert.FirstOrDefault(m => m.GiftCertNo == gc.GiftCertNo);
                     if (giftCert != null)
-                        response.ErrorMsg.Add("Gift Cert No: " + gc.GiftCertNo + " already exists in the database.");
+                        response.ErrorMsg.Add(String.Format("Line {0}: Gift Cert No {1} already exists in the database.", lineNumber, gc.GiftCertNo));
 
                     if (string.IsNullOrEmpty(gc.GcTypeName))
-                        response.ErrorMsg.Add("GC Type is required.");
+                        response.ErrorMsg.Add(String.Format("Line {0}: GC Type is required.", lineNumber));
 
                     if (gc.GcTypeName.Trim().ToLower() == "regular gc")
                     {
                         if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0)
-                            response.ErrorMsg.Add("Regular GC requires Gift Cert No, GC Type, Value and Services.");
+                            response.ErrorMsg.Add(String.Format("Line {0}: Regular GC requires Gift Cert No, GC Type, Value and Services.", lineNumber));
                         if (!string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate != DateTime.MinValue || outletRecords.Count() > 0)
-                            response.ErrorMsg.Add("Regular GC restricts DTI Permit No, Expiration Date and Oulet.");
+                            response.ErrorMsg.Add(String.Format("Line {0}: Regular GC restricts DTI Permit No, Expiration Date and Oulet.", lineNumber));
                     }
 
                     if (gc.GcTypeName.Trim().ToLower() == "corporate gc")
                     {
                         if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || gc.ExpirationDate == DateTime.MinValue)
-                            response.ErrorMsg.Add("Corporate GC requires Gift Cert No, GC Type, Value, Expiration Date and Services.");
+                            response.ErrorMsg.Add(String.Format("Line {0}: Corporate GC requires Gift Cert No, GC Type, Value, Expiration Date and Services.", lineNumber));
                         if (!string.IsNullOrEmpty(gc.DtiPermitNo) || outletRecords.Count() > 0)
-                            response.ErrorMsg.Add("Corporate GC restricts DTI Permit No and Oulet.");
+                            response.ErrorMsg.Add(String.Format("Line {0}: Corporate GC restricts DTI Permit No and Oulet.", lineNumber));
                     }
 
                     if (gc.GcTypeName.Trim().ToLower() == "promotional gc")
                     {
                         if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate == DateTime.MinValue || outletRecords.Count() == 0)
-                            response.ErrorMsg.Add("Promotional GC requires all fields.");
+                            response.ErrorMsg.Add(String.Format("Line {0}: Promotional GC requires all fields.", lineNumber));
                     }
 
                     if (response.ErrorMsg.Count > 0)
@@ -147,7 +149,7 @@ namespace GiftCertWeb.Controllers
 
                 if (files.Count < 1)
                 {
-                    errorMsg = "File is required.";
+                    errorMsg = "Excel file is required.";
                     ModelState.AddModelError(string.Empty, errorMsg);
                 }
                 else
@@ -169,7 +171,7 @@ namespace GiftCertWeb.Controllers
                     var response = BulkCopy(filePath);
 
                     if (response.ErrorMsg.Count > 0)
-                    {                     
+                    {
                         foreach (var msg in response.ErrorMsg)
                         {
                             ModelState.AddModelError(string.Empty, msg);
@@ -219,83 +221,61 @@ namespace GiftCertWeb.Controllers
                         if (col == 1)
                         {
                             if (rawValidationText != "gift cert no")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'Gift Cert No'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column A: The column heading should be 'Gift Cert No'.");
                         }
                         else if (col == 2)
                         {
                             if (rawValidationText != "gc type")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'GC Type'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column B: The column heading should be 'GC Type'.");
                         }
                         else if (col == 3)
                         {
                             if (rawValidationText != "value")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'Value'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column C: The column heading should be 'Value'.");
                         }
                         else if (col == 4)
                         {
                             if (rawValidationText != "issuance date")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'Issuance Date'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column D: The column heading should be 'Issuance Date'.");
                         }
                         else if (col == 5)
                         {
                             if (rawValidationText != "services")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'Services'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column E: The column heading should be 'Services'.");
                         }
                         else if (col == 6)
                         {
                             if (rawValidationText != "note")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'Note'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column F: The column heading should be 'Note'.");
                         }
                         else if (col == 7)
                         {
                             if (rawValidationText != "dti permit no")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'DTI Permit No'.");
-                                response.IsValid = false;
-                            }
-                        }                      
+                                response.ErrorMsg.Add("Column G: The column heading should be 'DTI Permit No'.");
+                        }
                         else if (col == 8)
                         {
                             if (rawValidationText != "expiration date")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'Expiration Date'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column H: The column heading should be 'Expiration Date'.");
                         }
                         else if (col == 9)
                         {
                             if (rawValidationText != "outlet")
-                            {
-                                response.ErrorMsg.Add("The column heading should be 'Outlet'.");
-                                response.IsValid = false;
-                            }
+                                response.ErrorMsg.Add("Column I: The column heading should be 'Outlet'.");
                         }
                     }
                     else
                     {
-                        response.ErrorMsg.Add("The data has null column headings.");
-                        response.IsValid = false;
+                        var emptyColumnErr = "Line 1: Column headings cannot be empty.";
+                        if (!response.ErrorMsg.Contains(emptyColumnErr))
+                            response.ErrorMsg.Add(emptyColumnErr);
                     }
                 }
             }
+
+            if (response.ErrorMsg.Count > 0)
+                response.IsValid = false;
+
             return response;
         }
 
@@ -349,8 +329,11 @@ namespace GiftCertWeb.Controllers
 
                 var gcList = new List<GiftCertDto>();
 
-                foreach (string record in records)
+                for (int i = 0; i < records.Count; i++)
                 {
+                    var record = records[i];
+                    var lineNumber = i + 2;
+
                     if (string.IsNullOrEmpty(record))
                         break;
 
@@ -358,6 +341,19 @@ namespace GiftCertWeb.Controllers
 
                     string[] textpart = record.Split('|');
 
+                    //gcnumber should be in whole number                    
+                    if (!IsCharDigit(textpart[0].ToString()))
+                        response.ErrorMsg.Add(String.Format("Line {0}: Gift Cert No should be in whole number.", lineNumber));
+
+                    //gctype contains only
+                    var gcTypeItems = new List<string> { "regular gc", "promotional gc", "corporate gc" };
+                    if (!gcTypeItems.Contains(textpart[1].ToLower().Trim()))
+                        response.ErrorMsg.Add(String.Format("Line {0}: GC Type should contains only Regular GC, Promotional GC and Corporate GC.", lineNumber));
+
+                    //value should be in whole number                            
+                    if (!IsCharDigit(textpart[2].ToString()))
+                        response.ErrorMsg.Add(String.Format("Line {0}: Value should be in whole number.", lineNumber));
+                 
                     if (textpart[0] != string.Empty)
                         gc.GiftCertNo = Convert.ToInt32(textpart[0]);
                     gc.GcTypeName = textpart[1].Trim();
@@ -366,9 +362,10 @@ namespace GiftCertWeb.Controllers
                     if (textpart[3] != string.Empty)
                         gc.IssuanceDate = Convert.ToDateTime(textpart[3]);
                     gc.Note = textpart[5];
-                    gc.DtiPermitNo = textpart[6];                  
+                    gc.DtiPermitNo = textpart[6];
                     if (textpart[7] != string.Empty)
                         gc.ExpirationDate = Convert.ToDateTime(textpart[7]);
+
                     var servicesList = new List<ServicesTypeDto>();
                     string[] servicesRecords = textpart[4].Split(';');
 
@@ -389,9 +386,20 @@ namespace GiftCertWeb.Controllers
                         outletList.Add(outlet);
                     }
 
+                    //expiry date greater than purchase 
+                    if (gc.ExpirationDate != null && gc.IssuanceDate != null)
+                    {
+                        if (gc.ExpirationDate < gc.IssuanceDate)
+                            response.ErrorMsg.Add(String.Format("Line {0}: Expiration date must be greater than Issuance date.", lineNumber));
+                    }
+
+                    //Outlets - Promotional GC:
+                    var outletItems = new List<string> { "café marco", "wellness zone spa", "rooms" };
+                    if (outletList.Where(o => !string.IsNullOrEmpty(o.Name)).Select(o => o.Name.ToLower().Trim()).Except(outletItems).Any())
+                        response.ErrorMsg.Add(String.Format("Line {0}: Promotional GC should contains only Café Marco, Wellness Zone Spa and Rooms.", lineNumber));
+
                     gc.Services = servicesList;
                     gc.Outlets = outletList;
-
 
                     gcList.Add(gc);
                 }
@@ -400,22 +408,6 @@ namespace GiftCertWeb.Controllers
                 var isSequential = IsSequential(gcList.Select(m => m.GiftCertNo).ToArray());
                 if (!isSequential)
                     response.ErrorMsg.Add("GC Number should be sequenced.");
-
-                //gctype contains only
-                var gcTypeItems = new List<string> { "regular gc", "promotional gc", "corporate gc" };
-                if (gcList.Select(m => m.GcTypeName.ToLower().Trim()).Except(gcTypeItems).Any())
-                    response.ErrorMsg.Add("GC Type should contains only Regular GC, Promotional GC and Corporate GC");
-
-                //value should be in whole number
-                var isDigit = gcList.Select(m => m.Value.ToString().Trim()).ToArray().All(c => IsCharDigit(c));
-                if (!isDigit)
-                    response.ErrorMsg.Add("Value should be in whole number.");
-
-                //Outlets - Promotional GC:
-                var outletItems = new List<string> { "café marco", "wellness zone spa", "rooms"};
-                var outlets = gcList.SelectMany(m => m.Outlets).ToList();
-                if (outlets.Where(o => !string.IsNullOrEmpty(o.Name)).Select(o => o.Name.ToLower().Trim()).Except(outletItems).Any())
-                    response.ErrorMsg.Add("Promotional GC should contains only Café Marco, Wellness Zone Spa and Rooms");
 
                 if (response.ErrorMsg.Count > 0)
                 {
