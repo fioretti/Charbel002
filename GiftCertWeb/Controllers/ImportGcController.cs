@@ -448,7 +448,7 @@ namespace GiftCertWeb.Controllers
                 //validate sequential gcno
                 var isSequential = IsSequential(gcList.Select(m => m.GiftCertNo).ToArray());
                 if (!isSequential)
-                    response.ErrorMsg.Add("GC Number should be sequenced.");
+                    response.ErrorMsg.Add("Column A: GC Number should be sequenced.");
 
                 if (response.ErrorMsg.Count > 0)
                 {
