@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -92,12 +93,37 @@ namespace GiftCertWeb.Controllers
                     string[] outletRecords = new List<string>().ToArray();
                     string[] textpart = record.Split('|');
 
-                    gc.GiftCertNo = !string.IsNullOrEmpty(textpart[0]) ? Convert.ToInt32(textpart[0]) : 0;
-                    gc.GcTypeName = !string.IsNullOrEmpty(textpart[1]) ? textpart[1] : string.Empty;
-                    gc.Value = !string.IsNullOrEmpty(textpart[2]) ? Convert.ToDecimal(textpart[2]) : 0;
-                    gc.IssuanceDate = !string.IsNullOrEmpty(textpart[3]) ? Convert.ToDateTime(textpart[3]) : DateTime.MinValue;
+                    //gcnumber should be in whole number                    
+                    if (!IsCharDigit(textpart[0].ToString()))
+                        response.ErrorMsg.Add(String.Format("Line {0}: Gift Cert No should be in whole number.", lineNumber));
+                    else
+                        gc.GiftCertNo = !string.IsNullOrEmpty(textpart[0]) ? Convert.ToInt32(textpart[0]) : 0;
+
+                    //value should be in whole number                            
+                    if (!IsCharDigit(textpart[2].ToString()))
+                        response.ErrorMsg.Add(String.Format("Line {0}: Value should be in whole number.", lineNumber));
+                    else
+                        gc.Value = !string.IsNullOrEmpty(textpart[2]) ? Convert.ToDecimal(textpart[2]) : 0;
+
+                    //gctype contains only
+                    var gcTypeItems = new List<string> { "regular gc", "promotional gc", "corporate gc" };
+                    if (!gcTypeItems.Contains(textpart[1].ToLower().Trim()))
+                        response.ErrorMsg.Add(String.Format("Line {0}: GC Type should contains only Regular GC, Promotional GC and Corporate GC.", lineNumber));
+                    else
+                        gc.GcTypeName = !string.IsNullOrEmpty(textpart[1]) ? textpart[1] : string.Empty;
+
+                    if (IsValidDateFormat(textpart[3]))
+                        gc.IssuanceDate = !string.IsNullOrEmpty(textpart[3]) ? Convert.ToDateTime(textpart[3]) : DateTime.MinValue;
+                    else
+                        response.ErrorMsg.Add(String.Format("Line {0}: Please Enter the issuance date in the format 'M/D/YYYY'.", lineNumber));
+
+                    if (IsValidDateFormat(textpart[7]))
+                        gc.ExpirationDate = !string.IsNullOrEmpty(textpart[7]) ? Convert.ToDateTime(textpart[7]) : DateTime.MinValue;
+                    else
+                        response.ErrorMsg.Add(String.Format("Line {0}: Please Enter the expiration date in the format 'M/D/YYYY'.", lineNumber));
+
                     gc.DtiPermitNo = !string.IsNullOrEmpty(textpart[6]) ? textpart[6] : string.Empty;
-                    gc.ExpirationDate = !string.IsNullOrEmpty(textpart[7]) ? Convert.ToDateTime(textpart[7]) : DateTime.MinValue;
+                  
                     if (!string.IsNullOrEmpty(textpart[4]))
                         servicesRecords = textpart[4].Split(';');
                     if (!string.IsNullOrEmpty(textpart[8]))
@@ -107,29 +133,36 @@ namespace GiftCertWeb.Controllers
                     if (giftCert != null)
                         response.ErrorMsg.Add(String.Format("Line {0}: Gift Cert No {1} already exists in the database.", lineNumber, gc.GiftCertNo));
 
-                    if (string.IsNullOrEmpty(gc.GcTypeName))
-                        response.ErrorMsg.Add(String.Format("Line {0}: GC Type is required.", lineNumber));
-
-                    if (gc.GcTypeName.Trim().ToLower() == "regular gc")
+                    if (!string.IsNullOrEmpty(gc.GcTypeName))
                     {
-                        if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0)
-                            response.ErrorMsg.Add(String.Format("Line {0}: Regular GC requires Gift Cert No, GC Type, Value and Services.", lineNumber));
-                        if (!string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate != DateTime.MinValue || outletRecords.Count() > 0)
-                            response.ErrorMsg.Add(String.Format("Line {0}: Regular GC restricts DTI Permit No, Expiration Date and Oulet.", lineNumber));
+                        if (gc.GcTypeName.Trim().ToLower() == "regular gc")
+                        {
+                            if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0)
+                                response.ErrorMsg.Add(String.Format("Line {0}: Regular GC requires Gift Cert No, GC Type, Value and Services.", lineNumber));
+                            if (!string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate != DateTime.MinValue || outletRecords.Count() > 0)
+                                response.ErrorMsg.Add(String.Format("Line {0}: Regular GC restricts DTI Permit No, Expiration Date and Oulet.", lineNumber));
+                        }
+
+                        if (gc.GcTypeName.Trim().ToLower() == "corporate gc")
+                        {
+                            if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || gc.ExpirationDate == DateTime.MinValue)
+                                response.ErrorMsg.Add(String.Format("Line {0}: Corporate GC requires Gift Cert No, GC Type, Value, Expiration Date and Services.", lineNumber));
+                            if (!string.IsNullOrEmpty(gc.DtiPermitNo) || outletRecords.Count() > 0)
+                                response.ErrorMsg.Add(String.Format("Line {0}: Corporate GC restricts DTI Permit No and Oulet.", lineNumber));
+                        }
+
+                        if (gc.GcTypeName.Trim().ToLower() == "promotional gc")
+                        {
+                            if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate == DateTime.MinValue || outletRecords.Count() == 0)
+                                response.ErrorMsg.Add(String.Format("Line {0}: Promotional GC requires all fields.", lineNumber));
+                        }
                     }
-
-                    if (gc.GcTypeName.Trim().ToLower() == "corporate gc")
+                 
+                    //expiry date greater than purchase 
+                    if (gc.ExpirationDate != DateTime.MinValue && gc.IssuanceDate != DateTime.MinValue)
                     {
-                        if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || gc.ExpirationDate == DateTime.MinValue)
-                            response.ErrorMsg.Add(String.Format("Line {0}: Corporate GC requires Gift Cert No, GC Type, Value, Expiration Date and Services.", lineNumber));
-                        if (!string.IsNullOrEmpty(gc.DtiPermitNo) || outletRecords.Count() > 0)
-                            response.ErrorMsg.Add(String.Format("Line {0}: Corporate GC restricts DTI Permit No and Oulet.", lineNumber));
-                    }
-
-                    if (gc.GcTypeName.Trim().ToLower() == "promotional gc")
-                    {
-                        if (gc.GiftCertNo == 0 || gc.Value == 0 || servicesRecords.Count() == 0 || string.IsNullOrEmpty(gc.DtiPermitNo) || gc.ExpirationDate == DateTime.MinValue || outletRecords.Count() == 0)
-                            response.ErrorMsg.Add(String.Format("Line {0}: Promotional GC requires all fields.", lineNumber));
+                        if (gc.ExpirationDate < gc.IssuanceDate)
+                            response.ErrorMsg.Add(String.Format("Line {0}: Expiration date must be greater than Issuance date.", lineNumber));
                     }
 
                     if (response.ErrorMsg.Count > 0)
@@ -205,6 +238,19 @@ namespace GiftCertWeb.Controllers
             }
 
             return true;
+        }
+
+        private bool IsValidDateFormat(string date)
+        {
+            date = date.Split(" ")[0].ToString();
+            if (string.IsNullOrEmpty(date))
+                return true;
+
+            DateTime Test;
+            if (DateTime.TryParseExact(date, "M/d/yyyy", null, DateTimeStyles.None, out Test) == true)
+                return true;
+            else
+                return false;
         }
 
         private ValidationResponse ValidateColumnHeaders(ValidationResponse response, int ColCount, ExcelWorksheet worksheet)
@@ -352,32 +398,20 @@ namespace GiftCertWeb.Controllers
                         break;
 
                     var gc = new GiftCertDto();
-
-                    string[] textpart = record.Split('|');
-
-                    //gcnumber should be in whole number                    
-                    if (!IsCharDigit(textpart[0].ToString()))
-                        response.ErrorMsg.Add(String.Format("Line {0}: Gift Cert No should be in whole number.", lineNumber));
-
-                    //gctype contains only
                     var gcTypeItems = new List<string> { "regular gc", "promotional gc", "corporate gc" };
-                    if (!gcTypeItems.Contains(textpart[1].ToLower().Trim()))
-                        response.ErrorMsg.Add(String.Format("Line {0}: GC Type should contains only Regular GC, Promotional GC and Corporate GC.", lineNumber));
-
-                    //value should be in whole number                            
-                    if (!IsCharDigit(textpart[2].ToString()))
-                        response.ErrorMsg.Add(String.Format("Line {0}: Value should be in whole number.", lineNumber));
-                 
-                    if (textpart[0] != string.Empty)
+                    string[] textpart = record.Split('|');
+                                  
+                    if (textpart[0] != string.Empty && IsCharDigit(textpart[0].ToString()))
                         gc.GiftCertNo = Convert.ToInt32(textpart[0]);
-                    gc.GcTypeName = textpart[1].Trim();
-                    if (textpart[2] != string.Empty)
+                    if (!gcTypeItems.Contains(textpart[1].ToLower().Trim()))
+                        gc.GcTypeName = textpart[1].Trim();
+                    if (textpart[2] != string.Empty && IsCharDigit(textpart[2].ToString()))
                         gc.Value = Convert.ToDecimal(textpart[2]);
-                    if (textpart[3] != string.Empty)
+                    if (textpart[3] != string.Empty && IsValidDateFormat(textpart[3]))
                         gc.IssuanceDate = Convert.ToDateTime(textpart[3]);
                     gc.Note = textpart[5];
                     gc.DtiPermitNo = textpart[6];
-                    if (textpart[7] != string.Empty)
+                    if (textpart[7] != string.Empty && IsValidDateFormat(textpart[7]))
                         gc.ExpirationDate = Convert.ToDateTime(textpart[7]);
 
                     var outletList = new List<OutletDto>();
@@ -399,14 +433,7 @@ namespace GiftCertWeb.Controllers
                         servicesType.Name = ServiceSetVar(servicesRecord, gc, outletList);
                         servicesList.Add(servicesType);
                     }
-                                     
-                    //expiry date greater than purchase 
-                    if (gc.ExpirationDate != null && gc.IssuanceDate != null)
-                    {
-                        if (gc.ExpirationDate < gc.IssuanceDate)
-                            response.ErrorMsg.Add(String.Format("Line {0}: Expiration date must be greater than Issuance date.", lineNumber));
-                    }
-
+                                                       
                     //Outlets - Promotional GC:
                     var outletItems = new List<string> { "café marco", "wellness zone spa", "rooms" };
                     if (outletList.Where(o => !string.IsNullOrEmpty(o.Name)).Select(o => o.Name.ToLower().Trim()).Except(outletItems).Any())
