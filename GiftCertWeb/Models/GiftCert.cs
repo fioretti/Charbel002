@@ -54,5 +54,9 @@ namespace GiftCertWeb.Models
                 return ExpirationDate != null ? Convert.ToDateTime(ExpirationDate).ToShortDateString() : string.Empty;
             }         
         }
+
+        [NotMapped]
+        public string GcCodeValue { get; set; }
+        
     }
 }

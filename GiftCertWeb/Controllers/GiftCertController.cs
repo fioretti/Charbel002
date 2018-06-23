@@ -125,6 +125,7 @@ namespace GiftCertWeb.Controllers
             }
 
             var giftCert = await _context.GiftCert
+                  .Include(g => g.GcType)
                   .Include(g => g.ServicesType)
                   .Include(g => g.GcOutlet).ThenInclude(o => o.Outlet)
                   .SingleOrDefaultAsync(m => m.GiftCertNo == id);

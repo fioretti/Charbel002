@@ -10,6 +10,9 @@ namespace GiftCertWeb.Models
     {
         CaféMarco = 1,
         LobbyLounge = 2,
-        ElViento = 3
+        ElViento = 3,
+        WellnessZoneSpa = 5,
+        Rooms = 7,
+        BluBarAndGrill = 10
     }
 }

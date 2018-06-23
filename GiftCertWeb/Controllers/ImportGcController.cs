@@ -334,7 +334,8 @@ namespace GiftCertWeb.Controllers
 
             servicesRecord = servicesRecord.Replace("@Value".ToLower(), gc.Value.ToString());
             servicesRecord = servicesRecord.Replace("@Outlet".ToLower(), outlet);
-            servicesRecord = servicesRecord.Replace("@ExpirationDate".ToLower(), gc.ExpirationDate.ToString());
+            var expirationDate = gc.ExpirationDate != null ? Convert.ToDateTime(gc.ExpirationDate).ToShortDateString() : string.Empty;
+            servicesRecord = servicesRecord.Replace("@ExpirationDate".ToLower(), expirationDate);
 
             return servicesRecord;
         }
@@ -403,7 +404,7 @@ namespace GiftCertWeb.Controllers
                                   
                     if (textpart[0] != string.Empty && IsCharDigit(textpart[0].ToString()))
                         gc.GiftCertNo = Convert.ToInt32(textpart[0]);
-                    if (!gcTypeItems.Contains(textpart[1].ToLower().Trim()))
+                    if (gcTypeItems.Contains(textpart[1].ToLower().Trim()))
                         gc.GcTypeName = textpart[1].Trim();
                     if (textpart[2] != string.Empty && IsCharDigit(textpart[2].ToString()))
                         gc.Value = Convert.ToDecimal(textpart[2]);
@@ -499,6 +500,13 @@ namespace GiftCertWeb.Controllers
                             gcOutlet.OutletId = (int)OutletOptions.ElViento;
                         if (outlet.Name.Replace(" ", "") == OutletOptions.LobbyLounge.ToString())
                             gcOutlet.OutletId = (int)OutletOptions.LobbyLounge;
+
+                        if (outlet.Name.Replace(" ", "") == OutletOptions.WellnessZoneSpa.ToString())
+                            gcOutlet.OutletId = (int)OutletOptions.WellnessZoneSpa;
+                        if (outlet.Name.Replace(" ", "") == OutletOptions.Rooms.ToString())
+                            gcOutlet.OutletId = (int)OutletOptions.Rooms;
+                        if (outlet.Name.Replace(" ", "") == OutletOptions.BluBarAndGrill.ToString())
+                            gcOutlet.OutletId = (int)OutletOptions.BluBarAndGrill;
 
                         gcOutlet.GiftCertNo = gc.GiftCertNo;
                         gcOutlets.Add(gcOutlet);
