@@ -13,6 +13,6 @@ namespace GiftCertWeb.Models
         ElViento = 3,
         WellnessZoneSpa = 5,
         Rooms = 7,
-        BluBarAndGrill = 10
+        BluBarAndGrill = 8
     }
 }
