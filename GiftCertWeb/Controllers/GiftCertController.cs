@@ -21,25 +21,30 @@ namespace GiftCertWeb.Controllers
             _context = context;
         }
 
-        private async Task<int> GetGcStatus(int giftCertNo, DateTime expirationDate)
-        {
-            //TODO: Voided, manually voided sa system - unsold GC	Basin Audit lng naai rights
+        //private async Task<GiftCert> SetGcStatus(IQueryable<GiftCert> giftCert)
+        //{
+        //    if (giftCert.Select(o => o.Name.ToLower().Trim()).Except(outletItems).Any())
 
-            if (DateTime.Now > expirationDate)
-                return (int)StatusEnum.Expired;
 
-            var gcRedemption = await _context.GcRedemption.SingleOrDefaultAsync(m => m.GiftCertNo == giftCertNo);
-            if (gcRedemption != null)
-                return (int)StatusEnum.Availed;
-            else
-            {
-                var gcPurchase = await _context.GcPurchase.SingleOrDefaultAsync(m => m.GiftCertNo == giftCertNo);
-                if (gcPurchase == null)
-                    return (int)StatusEnum.Unsold;
-                else
-                    return (int)StatusEnum.Sold;
-            }                
-        }
+        //        //TODO: Voided, manually voided sa system - unsold GC	Basin Audit lng naai rights
+
+        //        if (DateTime.Now > expirationDate)
+        //        return (int)StatusEnum.Expired;
+
+        //    var gcRedemption = await _context.GcRedemption.SingleOrDefaultAsync(m => m.GiftCertNo == giftCertNo);
+        //    if (gcRedemption != null)
+        //        return (int)StatusEnum.Availed;
+        //    else
+        //    {
+        //        var gcPurchase = await _context.GcPurchase.SingleOrDefaultAsync(m => m.GiftCertNo == giftCertNo);
+        //        if (gcPurchase == null)
+        //            return (int)StatusEnum.Unsold;
+        //        else
+        //            return (int)StatusEnum.Sold;
+        //    }
+
+        //    return giftCert;
+        //}
 
         // GET: GiftCert
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
@@ -84,6 +89,8 @@ namespace GiftCertWeb.Controllers
                     giftCerts = giftCerts.OrderBy(s => s.GiftCertNo);
                     break;
             }
+
+          //  giftCerts = SetGcStatus(giftCerts);
 
             int pageSize = 10;            
             return View(await PaginatedList<GiftCert>.CreateAsync(giftCerts.AsNoTracking(), page ?? 1, pageSize));
