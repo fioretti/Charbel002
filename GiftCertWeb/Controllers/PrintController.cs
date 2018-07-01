@@ -76,10 +76,10 @@ namespace GiftCertWeb.Controllers
                 giftCert.GcCodeValue = GetCodeValue(giftCert.Value);
 
                 var report = new ViewAsPdf("ViewAsPDF")
-                {
-                    PageMargins = { Left = 20, Bottom = 20, Right = 20, Top = 20 },
-                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
-                    PageSize = Rotativa.AspNetCore.Options.Size.Dle,
+                {                    
+                    PageMargins = {  Right = 12, Top = 12 },
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                    PageSize = Rotativa.AspNetCore.Options.Size.Letter,                                        
                     Model = giftCert
                 };
                 return report;

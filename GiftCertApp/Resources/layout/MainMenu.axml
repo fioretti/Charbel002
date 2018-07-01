@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/logoImageView"
+        android:src="@drawable/marcoPoloLogo" />
+    <Button
+        android:text="Purchase Gift Cert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/purchaseButton" />
+    <Button
+        android:text="Redeem Gift Cert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/redeemButton" />
+    <Button
+        android:text="View Purchase Gift Cert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewPurchaseGcButton" />
+  <Button
+       android:text="View Redeem Gift Cert"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/viewRedeemGcButton" />
+</LinearLayout>
