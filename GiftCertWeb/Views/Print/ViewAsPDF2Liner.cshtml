@@ -1,0 +1,41 @@
+﻿@model GiftCertWeb.Models.GiftCert
+@addTagHelper "*, GiftCertWeb"
+@{
+    Layout = null;
+}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <META http-equiv="X-UA-Compatible" content="IE=8">
+    <TITLE>bcl_1568090610.htm</TITLE>
+    <META name="generator" content="BCL easyConverter SDK 5.0.08">
+    <link rel="stylesheet" href="~/css/pdf2liner.css" />
+</HEAD>
+
+<BODY>
+    <DIV id="page_1">
+        <DIV id="p1dimg1">         
+            <qrcode-png alt="QR Code" width="80" height="80" margin="0" content="@Model.QrCode" />
+        </DIV>
+
+
+        <DIV class="dclr"></DIV>
+        <P class="p0 ft0">@Model.ValueCurrency</P>
+        <P class="p1 ft1">@Model.DtiPermitNo</P>
+        <P class="p2 ft1">@Model.DtiPermitNo</P>
+        <P class="p3 ft2">
+            @Model.ServicesType.ElementAt(0).Name
+                <span id="p1dimg2">              
+                    <qrcode-png alt="QR Code" width="80" height="80" margin="0" content="@Model.QrCode" />
+                </span>
+            </P>
+        <P class="p4 ft3">@Model.ServicesType.ElementAt(1).Name</P>
+        <P class="p5 ft4">Note: @Model.Note</P>
+        <P class="p6 ft5">@Model.GcCodeValue</P>
+        <P class="p7 ft5">@Model.ExpirationDatePrintFormat</P>
+    </DIV>
+</BODY>
+</HTML>
+

@@ -11,12 +11,12 @@
     <META http-equiv="X-UA-Compatible" content="IE=8">
     <TITLE>bcl_1568090610.htm</TITLE>
     <META name="generator" content="BCL easyConverter SDK 5.0.08">
-    <link rel="stylesheet" href="~/css/pdf2.css" />
+    <link rel="stylesheet" href="~/css/pdf3liner.css" />
 </HEAD>
 
 <BODY>
     <DIV id="page_1">
-        <DIV id="p1dimg1">         
+        <DIV id="p1dimg1">
             <qrcode-png alt="QR Code" width="80" height="80" margin="0" content="@Model.QrCode" />
         </DIV>
 
@@ -26,12 +26,13 @@
         <P class="p1 ft1">@Model.DtiPermitNo</P>
         <P class="p2 ft1">@Model.DtiPermitNo</P>
         <P class="p3 ft2">
-            @Model.ServicesType.FirstOrDefault().Name
-                <span id="p1dimg2">              
-                    <qrcode-png alt="QR Code" width="80" height="80" margin="0" content="@Model.QrCode" />
-                </span>
-            </P>
-        <P class="p4 ft3">@Model.ServicesType.LastOrDefault().Name</P>
+            @Model.ServicesType.ElementAt(0).Name
+            <span id="p1dimg2">
+                <qrcode-png alt="QR Code" width="80" height="80" margin="0" content="@Model.QrCode" />
+            </span>
+        </P>
+        <P class="p4 ft3">@Model.ServicesType.ElementAt(1).Name</P>
+        <P class="p8 ft3">@Model.ServicesType.ElementAt(2).Name</P>
         <P class="p5 ft4">Note: @Model.Note</P>
         <P class="p6 ft5">@Model.GcCodeValue</P>
         <P class="p7 ft5">@Model.ExpirationDatePrintFormat</P>

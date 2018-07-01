@@ -75,7 +75,14 @@ namespace GiftCertWeb.Controllers
 
                 giftCert.GcCodeValue = GetCodeValue(giftCert.Value);
 
-                var report = new ViewAsPdf("ViewAsPDF")
+                var viewAsPdf = string.Empty;
+
+                if (giftCert.ServicesType.Count == 3)
+                    viewAsPdf = "ViewAsPDF3Liner";
+                else if (giftCert.ServicesType.Count == 2)
+                    viewAsPdf = "ViewAsPDF2Liner";
+
+                var report = new ViewAsPdf(viewAsPdf)
                 {                    
                     PageMargins = {  Right = 12, Top = 12 },
                     PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
