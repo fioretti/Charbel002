@@ -57,6 +57,22 @@ namespace GiftCertWeb.Models
 
         [NotMapped]
         public string GcCodeValue { get; set; }
-        
+        [NotMapped]
+        public string ValueCurrency {
+            get
+            {
+                return Value != null ? String.Format("P{0:C}", Convert.ToInt32(Value)).Replace("$", "").Replace(".00", "") : string.Empty;
+            }
+        }
+
+        [NotMapped]
+        public string ExpirationDatePrintFormat
+        {
+            get
+            {
+                return ExpirationDate != null ? Convert.ToDateTime(ExpirationDate).ToString("dd MMMM yyyy") : string.Empty;
+            }
+        }
+
     }
 }
