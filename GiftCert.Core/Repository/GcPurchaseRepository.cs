@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace GiftCert.Core.Repository
 {
-    public class GiftCertRepository
+    public class GcPurchaseRepository
     {
 
-        string url = "http://gillcleerenpluralsight.blob.core.windows.net/files/hotdogs.json";
-        private static List<HotDogGroup> hotDogGroups = new List<HotDogGroup>();
+        string url = "http://localhost:8080/api/gcpurchase";
+        private static List<GcPurchase> gcPurchases = new List<GcPurchase>();
 
-        public GiftCertRepository()
+        public GcPurchaseRepository()
         {
             Task.Run(() => this.LoadDataAsync(url)).Wait();
         }
 
         private async Task LoadDataAsync(string uri)
         {
-            if (hotDogGroups != null)
+            if (gcPurchases != null)
             {
                 string responseJsonString = null;
 
@@ -31,11 +31,10 @@ namespace GiftCert.Core.Repository
                     try
                     {
                         Task<HttpResponseMessage> getResponse = httpClient.GetAsync(uri);
-
                         HttpResponseMessage response = await getResponse;
 
                         responseJsonString = await response.Content.ReadAsStringAsync();
-                        hotDogGroups = JsonConvert.DeserializeObject<List<HotDogGroup>>(responseJsonString);
+                        gcPurchases = JsonConvert.DeserializeObject<List<GcPurchase>>(responseJsonString);
                     }
                     catch (Exception ex)
                     {
@@ -46,53 +45,68 @@ namespace GiftCert.Core.Repository
             }
         }
 
-        public List<HotDog> GetAllHotDogs()
+        public List<GcPurchase> GetGcPurchases()
         {
-            IEnumerable<HotDog> hotDogs =
-                from hotDogGroup in hotDogGroups
-                from hotDog in hotDogGroup.HotDogs
-
-                select hotDog;
-            return hotDogs.ToList<HotDog>();
+            return gcPurchases;
         }
 
-        public HotDog GetHotDogById(int hotDogId)
+        public GcPurchase GetGcPurchaseById(int orderId)
         {
-            IEnumerable<HotDog> hotDogs =
-                from hotDogGroup in hotDogGroups
-                from hotDog in hotDogGroup.HotDogs
-                where hotDog.HotDogId == hotDogId
-                select hotDog;
+            IEnumerable<GcPurchase> _gcPurchases =
+                from gcPurchase in gcPurchases
+                where gcPurchase.Remarks == orderId.ToString()
+                select gcPurchase;
 
-            return hotDogs.FirstOrDefault();
+            return _gcPurchases.FirstOrDefault();
         }
 
-        public List<HotDogGroup> GetGroupedHotDogs()
-        {
-            return hotDogGroups;
-        }
+        //public List<HotDog> GetAllHotDogs()
+        //{
+        //    IEnumerable<HotDog> hotDogs =
+        //        from hotDogGroup in hotDogGroups
+        //        from hotDog in hotDogGroup.HotDogs
 
-        public List<HotDog> GetHotDogsForGroup(int hotDogGroupId)
-        {
-            var group = hotDogGroups.Where(h => h.HotDogGroupId == hotDogGroupId).FirstOrDefault();
+        //        select hotDog;
+        //    return hotDogs.ToList<HotDog>();
+        //}
 
-            if (group != null)
-            {
-                return group.HotDogs;
-            }
-            return null;
-        }
+        //public HotDog GetHotDogById(int hotDogId)
+        //{
+        //    IEnumerable<HotDog> hotDogs =
+        //        from hotDogGroup in hotDogGroups
+        //        from hotDog in hotDogGroup.HotDogs
+        //        where hotDog.HotDogId == hotDogId
+        //        select hotDog;
 
-        public List<HotDog> GetFavoriteHotDogs()
-        {
-            IEnumerable<HotDog> hotDogs =
-                from hotDogGroup in hotDogGroups
-                from hotDog in hotDogGroup.HotDogs
-                where hotDog.IsFavorite
-                select hotDog;
+        //    return hotDogs.FirstOrDefault();
+        //}
 
-            return hotDogs.ToList<HotDog>();
-        }
+        //public List<HotDogGroup> GetGroupedHotDogs()
+        //{
+        //    return hotDogGroups;
+        //}
+
+        //public List<HotDog> GetHotDogsForGroup(int hotDogGroupId)
+        //{
+        //    var group = hotDogGroups.Where(h => h.HotDogGroupId == hotDogGroupId).FirstOrDefault();
+
+        //    if (group != null)
+        //    {
+        //        return group.HotDogs;
+        //    }
+        //    return null;
+        //}
+
+        //public List<HotDog> GetFavoriteHotDogs()
+        //{
+        //    IEnumerable<HotDog> hotDogs =
+        //        from hotDogGroup in hotDogGroups
+        //        from hotDog in hotDogGroup.HotDogs
+        //        where hotDog.IsFavorite
+        //        select hotDog;
+
+        //    return hotDogs.ToList<HotDog>();
+        //}
 
 
         //private static List<HotDogGroup> hotDogGroups = new List<HotDogGroup>()
