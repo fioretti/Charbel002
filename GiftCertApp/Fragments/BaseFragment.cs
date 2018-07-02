@@ -18,12 +18,12 @@ namespace GiftCertApp.Fragments
     public class BaseFragment : Fragment
     {
         protected ListView listView;
-        protected HotDogDataService hotDogDataService;
-        protected List<HotDog> hotDogs;
+        protected GcPurchaseDataService gcPurchaseDataService;
+        protected List<GcPurchase> gcPurchases;
 
         public BaseFragment()
         {
-            hotDogDataService = new HotDogDataService();
+            gcPurchaseDataService = new GcPurchaseDataService();
         }
 
         protected void HandleEvents()
@@ -37,11 +37,11 @@ namespace GiftCertApp.Fragments
 
         protected void ListView_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
-            var hotDog = hotDogs[e.Position];
+            var gcPurchase = gcPurchases[e.Position];
 
             var intent = new Intent();
             intent.SetClass(this.Activity, typeof(HotDogDetailActivity));
-            intent.PutExtra("selectedHotDogId", hotDog.HotDogId);
+            intent.PutExtra("selectedHotDogId", gcPurchase.Id);
 
             StartActivityForResult(intent, 100);
         }

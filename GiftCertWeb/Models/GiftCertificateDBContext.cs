@@ -19,10 +19,12 @@ namespace GiftCertWeb.Models
         public virtual DbSet<GcType> GcType { get; set; }
         public virtual DbSet<GiftCert> GiftCert { get; set; }
         public virtual DbSet<Outlet> Outlet { get; set; }
+        public virtual DbSet<Purchase> Purchase { get; set; }
+        public virtual DbSet<Redemption> Redemption { get; set; }
         public virtual DbSet<ServicesType> ServicesType { get; set; }
 
         public GiftCertificateDBContext(DbContextOptions<GiftCertificateDBContext> options)
-              : base(options)
+               : base(options)
         { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -117,54 +119,28 @@ namespace GiftCertWeb.Models
 
             modelBuilder.Entity<GcPurchase>(entity =>
             {
-                entity.Property(e => e.CardType)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CcNumber)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
-
-                entity.Property(e => e.LastModifiedBy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.PaymentMode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Remarks).HasColumnType("text");
-
                 entity.HasOne(d => d.GiftCertNoNavigation)
                     .WithMany(p => p.GcPurchase)
                     .HasForeignKey(d => d.GiftCertNo)
                     .HasConstraintName("FK_GcPurchase_GiftCert");
+
+                entity.HasOne(d => d.Purchase)
+                    .WithMany(p => p.GcPurchase)
+                    .HasForeignKey(d => d.PurchaseId)
+                    .HasConstraintName("FK_GcPurchase_Purchase");
             });
 
             modelBuilder.Entity<GcRedemption>(entity =>
             {
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.LastModifiedBy)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RedemptionDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Remarks).HasColumnType("text");
-
                 entity.HasOne(d => d.GiftCertNoNavigation)
                     .WithMany(p => p.GcRedemption)
                     .HasForeignKey(d => d.GiftCertNo)
                     .HasConstraintName("FK_GcRedemption_GiftCert");
+
+                entity.HasOne(d => d.Redemption)
+                    .WithMany(p => p.GcRedemption)
+                    .HasForeignKey(d => d.RedemptionId)
+                    .HasConstraintName("FK_GcRedemption_Redemption");
             });
 
             modelBuilder.Entity<GcType>(entity =>
@@ -231,6 +207,48 @@ namespace GiftCertWeb.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(150)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Purchase>(entity =>
+            {
+                entity.Property(e => e.CardType)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CcNumber)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.PaymentMode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Remarks).HasColumnType("text");
+            });
+
+            modelBuilder.Entity<Redemption>(entity =>
+            {
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RedemptionDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Remarks).HasColumnType("text");
             });
 
             modelBuilder.Entity<ServicesType>(entity =>

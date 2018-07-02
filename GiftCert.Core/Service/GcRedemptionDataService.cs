@@ -6,33 +6,33 @@ using System.Text;
 
 namespace GiftCert.Core.Service
 {
-    public class HotDogDataService
+    public class GcRedemptionDataService
     {
-        private static GiftCertRepository giftCertRepository = new GiftCertRepository();
+        private static GcRedemptionRepository gcRedemptionRepository = new GcRedemptionRepository();
 
-        public List<HotDog> GetAllGiftCerts()
-        {
-            return giftCertRepository.GetAllHotDogs();
-        }
+        //public List<HotDog> GetAllGiftCerts()
+        //{
+        //    return giftCertRepository.GetAllHotDogs();
+        //}
 
-        public List<HotDogGroup> GetGroupedHotDogs()
-        {
-            return giftCertRepository.GetGroupedHotDogs();
-        }
+        //public List<HotDogGroup> GetGroupedHotDogs()
+        //{
+        //    return giftCertRepository.GetGroupedHotDogs();
+        //}
 
-        public List<HotDog> GetHotDogsForGroup(int hotDogGroupId)
-        {
-            return giftCertRepository.GetHotDogsForGroup(hotDogGroupId);
-        }
+        //public List<HotDog> GetHotDogsForGroup(int hotDogGroupId)
+        //{
+        //    return giftCertRepository.GetHotDogsForGroup(hotDogGroupId);
+        //}
 
-        public List<HotDog> GetFavoriteHotDogs()
-        {
-            return giftCertRepository.GetFavoriteHotDogs();
-        }
+        //public List<HotDog> GetFavoriteHotDogs()
+        //{
+        //    return giftCertRepository.GetFavoriteHotDogs();
+        //}
 
-        public HotDog GetHotDogById(int hotDogId)
-        {
-            return giftCertRepository.GetHotDogById(hotDogId);
-        }
+        //public HotDog GetHotDogById(int hotDogId)
+        //{
+        //    return giftCertRepository.GetHotDogById(hotDogId);
+        //}
     }
 }

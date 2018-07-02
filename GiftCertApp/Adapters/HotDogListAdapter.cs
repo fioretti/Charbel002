@@ -14,12 +14,12 @@ using GiftCertApp.Utility;
 
 namespace GiftCertApp.Adapters
 {
-    public class HotDogListAdapter : BaseAdapter<HotDog>
+    public class HotDogListAdapter : BaseAdapter<GcPurchase>
     {
-        List<HotDog> items;
+        List<GcPurchase> items;
         Activity context;
 
-        public HotDogListAdapter(Activity context, List<HotDog> items) : base()
+        public HotDogListAdapter(Activity context, List<GcPurchase> items) : base()
         {
             this.context = context;
             this.items = items;
@@ -30,7 +30,7 @@ namespace GiftCertApp.Adapters
             return position;
         }
 
-        public override HotDog this[int position]
+        public override GcPurchase this[int position]
         {
             get
             {
@@ -50,16 +50,16 @@ namespace GiftCertApp.Adapters
         {
             var item = items[position];
 
-            var imageBitmap = ImageHelper.GetImageBitmapFromUrl("http://gillcleerenpluralsight.blob.core.windows.net/files/" + item.ImagePath + ".jpg");
+          //  var imageBitmap = ImageHelper.GetImageBitmapFromUrl("http://gillcleerenpluralsight.blob.core.windows.net/files/" + item.ImagePath + ".jpg");
 
             if (convertView == null)
             {
                 convertView = context.LayoutInflater.Inflate(Resource.Layout.HotDogRowView, null);
             }
-            convertView.FindViewById<TextView>(Resource.Id.hotDogNameTextView).Text = item.Name;
-            convertView.FindViewById<TextView>(Resource.Id.shortDescriptionTextView).Text = item.ShortDescription;
-            convertView.FindViewById<TextView>(Resource.Id.priceTextView).Text = "$ " + item.Price;
-            convertView.FindViewById<ImageView>(Resource.Id.hotDogImageView).SetImageBitmap(imageBitmap);
+            convertView.FindViewById<TextView>(Resource.Id.hotDogNameTextView).Text = item.CcNumber;
+            convertView.FindViewById<TextView>(Resource.Id.shortDescriptionTextView).Text = item.CcNumber;
+            convertView.FindViewById<TextView>(Resource.Id.priceTextView).Text = "$ " + item.GiftCertNo;
+         //   convertView.FindViewById<ImageView>(Resource.Id.hotDogImageView).SetImageBitmap(imageBitmap);
 
             return convertView;
         }

@@ -75,7 +75,7 @@ namespace GiftCertWeb.Controllers
 
                 giftCert.GcCodeValue = GetCodeValue(giftCert.Value);
 
-                var viewAsPdf = string.Empty;
+                var viewAsPdf = "ViewAsPDF2Liner";
 
                 if (giftCert.ServicesType.Count == 3)
                     viewAsPdf = "ViewAsPDF3Liner";

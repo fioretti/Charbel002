@@ -28,8 +28,8 @@ namespace GiftCertApp
         private Button cancelButton;
         private Button orderButton;
 
-        private HotDog selectedHotDog;
-        private HotDogDataService dataService;
+        private GcPurchase selectedHotDog;
+        private GcPurchaseDataService dataService;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -38,7 +38,7 @@ namespace GiftCertApp
             SetContentView(Resource.Layout.GiftCertDetailView);
 
 
-            HotDogDataService dataService = new HotDogDataService();
+            GcPurchaseDataService dataService = new GcPurchaseDataService();
             var selectedHotDogId = Intent.Extras.GetInt("selectedHotDogId");
             selectedHotDog = dataService.GetHotDogById(selectedHotDogId);
 
@@ -62,14 +62,14 @@ namespace GiftCertApp
 
         private void BindData()
         {
-            hotDogNameTextView.Text = selectedHotDog.Name;
-            shortDescriptionTextView.Text = selectedHotDog.ShortDescription;
-            descriptionTextView.Text = selectedHotDog.Description;
-            priceTextView.Text = "Price: " + selectedHotDog.Price;
+            hotDogNameTextView.Text = selectedHotDog.CcNumber;
+            shortDescriptionTextView.Text = selectedHotDog.CcNumber;
+            descriptionTextView.Text = selectedHotDog.CcNumber;
+            priceTextView.Text = "Price: " + selectedHotDog.GiftCertNo;
 
-            var imageBitmap = ImageHelper.GetImageBitmapFromUrl("http://gillcleerenpluralsight.blob.core.windows.net/files/" + selectedHotDog.ImagePath + ".jpg");
+            //var imageBitmap = ImageHelper.GetImageBitmapFromUrl("http://gillcleerenpluralsight.blob.core.windows.net/files/" + selectedHotDog.ImagePath + ".jpg");
 
-            hotDogImageView.SetImageBitmap(imageBitmap);
+            //hotDogImageView.SetImageBitmap(imageBitmap);
         }
 
         private void HandleEvents()
@@ -88,7 +88,7 @@ namespace GiftCertApp
             var amount = Int32.Parse(amountEditText.Text);
 
             var intent = new Intent();
-            intent.PutExtra("selectedHotDogId", selectedHotDog.HotDogId);
+         //   intent.PutExtra("selectedHotDogId", selectedHotDog.HotDogId);
             intent.PutExtra("amount", amount);
 
             SetResult(Result.Ok, intent);

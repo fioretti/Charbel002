@@ -21,7 +21,7 @@ namespace GiftCertApp
     {
         private ListView hotDogListView;
         private List<HotDog> allHotDogs;
-        private HotDogDataService hotDogDataService;
+        private GcPurchaseDataService hotDogDataService;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -92,7 +92,7 @@ namespace GiftCertApp
 
                 var dialog = new AlertDialog.Builder(this);
                 dialog.SetTitle("Confirmation");
-                dialog.SetMessage(string.Format("You've added {0} time(s) the {1}", data.GetIntExtra("amount", 0), selectedHotDog.Name));
+                dialog.SetMessage(string.Format("You've added {0} time(s) the {1}", data.GetIntExtra("amount", 0), selectedHotDog.CcNumber));
                 dialog.Show();
             }
         }

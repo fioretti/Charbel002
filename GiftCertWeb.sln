@@ -5,9 +5,11 @@ VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GiftCertWeb", "GiftCertWeb\GiftCertWeb.csproj", "{CD0B3BE7-9EC7-458E-AF74-433AD2F9168F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GiftCert.Core", "GiftCert.Core\GiftCert.Core.csproj", "{881684F3-3F64-43B3-99C2-323EFAFE4B5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GiftCert.Core", "GiftCert.Core\GiftCert.Core.csproj", "{881684F3-3F64-43B3-99C2-323EFAFE4B5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GiftCertApp", "GiftCertApp\GiftCertApp.csproj", "{FED35E2B-F6DD-4BC3-966F-61010FAD6A2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GiftCertApi", "GiftCertApi\GiftCertApi.csproj", "{CECE0C59-E761-4FDA-B612-B99FB2FF479A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{FED35E2B-F6DD-4BC3-966F-61010FAD6A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FED35E2B-F6DD-4BC3-966F-61010FAD6A2C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FED35E2B-F6DD-4BC3-966F-61010FAD6A2C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{CECE0C59-E761-4FDA-B612-B99FB2FF479A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECE0C59-E761-4FDA-B612-B99FB2FF479A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECE0C59-E761-4FDA-B612-B99FB2FF479A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECE0C59-E761-4FDA-B612-B99FB2FF479A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

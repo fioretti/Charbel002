@@ -31,8 +31,8 @@ namespace GiftCertApp.Fragments
 
             HandleEvents();
 
-            hotDogs = hotDogDataService.GetHotDogsForGroup(1);
-            listView.Adapter = new HotDogListAdapter(this.Activity, hotDogs);
+            gcPurchases = gcPurchaseDataService.GetHotDogsForGroup(1);
+            listView.Adapter = new HotDogListAdapter(this.Activity, gcPurchases);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

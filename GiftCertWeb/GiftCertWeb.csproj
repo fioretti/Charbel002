@@ -10,15 +10,19 @@
     <Compile Remove="Views\GcPurchases\**" />
     <Compile Remove="Views\Purchase\**" />
     <Compile Remove="Views\Redemption\**" />
+    <Compile Remove="~~Models\**" />
     <Content Remove="Views\GcPurchases\**" />
     <Content Remove="Views\Purchase\**" />
     <Content Remove="Views\Redemption\**" />
+    <Content Remove="~~Models\**" />
     <EmbeddedResource Remove="Views\GcPurchases\**" />
     <EmbeddedResource Remove="Views\Purchase\**" />
     <EmbeddedResource Remove="Views\Redemption\**" />
+    <EmbeddedResource Remove="~~Models\**" />
     <None Remove="Views\GcPurchases\**" />
     <None Remove="Views\Purchase\**" />
     <None Remove="Views\Redemption\**" />
+    <None Remove="~~Models\**" />
   </ItemGroup>
 
   <ItemGroup>

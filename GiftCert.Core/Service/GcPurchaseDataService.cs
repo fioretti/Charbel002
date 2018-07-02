@@ -6,33 +6,33 @@ using System.Text;
 
 namespace GiftCert.Core.Service
 {
-    public class HotDogDataService
+    public class GcPurchaseDataService
     {
-        private static GiftCertRepository giftCertRepository = new GiftCertRepository();
+        private static GcPurchaseRepository gcPurchaseRepository = new GcPurchaseRepository();
 
-        public List<HotDog> GetAllGiftCerts()
+        //public List<HotDog> GetAllGiftCerts()
+        //{
+        //    return giftCertRepository.GetAllHotDogs();
+        //}
+
+        //public List<HotDogGroup> GetGroupedHotDogs()
+        //{
+        //    return giftCertRepository.GetGroupedHotDogs();
+        //}
+
+        public List<GcPurchase> GetHotDogsForGroup(int hotDogGroupId)
         {
-            return giftCertRepository.GetAllHotDogs();
+            return gcPurchaseRepository.GetGcPurchases();
         }
 
-        public List<HotDogGroup> GetGroupedHotDogs()
+        public List<GcPurchase> GetFavoriteHotDogs()
         {
-            return giftCertRepository.GetGroupedHotDogs();
+            return gcPurchaseRepository.GetGcPurchases();
         }
 
-        public List<HotDog> GetHotDogsForGroup(int hotDogGroupId)
+        public GcPurchase GetHotDogById(int orderId)
         {
-            return giftCertRepository.GetHotDogsForGroup(hotDogGroupId);
-        }
-
-        public List<HotDog> GetFavoriteHotDogs()
-        {
-            return giftCertRepository.GetFavoriteHotDogs();
-        }
-
-        public HotDog GetHotDogById(int hotDogId)
-        {
-            return giftCertRepository.GetHotDogById(hotDogId);
+            return gcPurchaseRepository.GetGcPurchaseById(orderId);
         }
     }
 }
