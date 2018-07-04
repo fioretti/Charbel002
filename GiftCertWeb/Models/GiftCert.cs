@@ -70,7 +70,7 @@ namespace GiftCertWeb.Models
         {
             get
             {
-                return ExpirationDate != null ? Convert.ToDateTime(ExpirationDate).ToString("dd MMMM yyyy") : string.Empty;
+                return ExpirationDate != null ? Convert.ToDateTime(ExpirationDate).ToString("dd MMMM yyyy").ToUpper() : string.Empty;
             }
         }
 
