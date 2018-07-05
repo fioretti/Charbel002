@@ -1,0 +1,148 @@
+﻿
+body {
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+#page_1 {
+    position: relative;
+    overflow: hidden;
+    margin: 67px 0px 598px 0px;
+    padding: 0px;
+    width: 770px;
+    border: none;
+    zoom: 200%;
+}
+
+    #page_1 #p1dimg1 {
+        position: absolute;
+        top: 2px;
+        left: 439px;
+        z-index: -1;
+        width: 282px;
+        height: 260px;
+    }
+
+        #page_1 #p1dimg1 #p1img1 {
+            width: 282px;
+            height: 260px;
+        }
+
+#p1dimg3 {
+    position: absolute;
+    top: 504px;
+    left: 51px;
+    z-index: -1;
+    width: 164px;
+    height: 50px;
+    zoom: 149%;
+}
+
+#p1dimg2 {
+    position: absolute;
+    top: 194px;
+    left: 546px;
+    z-index: -1;
+    width: 282px;
+    height: 260px;
+}
+
+
+
+
+.dclr {
+    clear: both;
+    float: none;
+    height: 1px;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+.ft0 {
+    font: 16px 'Mistral';
+    line-height: 18px;
+}
+
+.ft1 {
+    font: 15px 'Mistral';
+    line-height: 18px;
+}
+
+.ft2 {
+    font: bold 25px 'Mistral';
+    line-height: 32px;
+}
+
+.ft4 {
+    font: 13px 'Forte';
+    line-height: 14px;
+}
+
+.ft5 {
+    font: 19px 'Mistral';
+    line-height: 11px;
+}
+
+.ft6 {
+    font: 11px 'Mistral';
+    line-height: 15px;
+}
+
+.p0 {
+    text-align: right;
+    padding-right: 39px;
+    margin-top: 2px;
+    margin-bottom: 0px;
+}
+
+.p1 {
+    text-align: right;
+    padding-right: 40px;
+    margin-top: 1px;
+    margin-bottom: 0px;
+}
+
+.p2 {
+    text-align: right;
+    padding-right: 40px;
+    margin-top: 114px;
+    margin-bottom: 0px;
+}
+
+.p3 {
+    text-align: center;
+    padding-right: 30px;
+    margin-top: 39px;
+    margin-bottom: 0px;
+}
+
+.p5 {
+    text-align: left;
+    padding-left: 48px;
+    margin-top: -6px;
+    margin-bottom: 0px;
+}
+
+.p6 {
+    text-align: left;
+    padding-top: 20px;
+    padding-left: 547px;
+    margin-top: -4px;
+    margin-bottom: 0px;
+}
+
+.p7 {
+    text-align: left;
+    padding-top: 4px;
+    padding-left: 515px;
+    margin-top: 29px;
+    margin-bottom: 0px;
+}
+
+.p9 {
+    text-align: right;
+    padding-right: 40px;
+    margin-top: 13px;
+    margin-bottom: 0px;
+}

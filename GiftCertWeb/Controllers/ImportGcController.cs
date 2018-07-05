@@ -353,7 +353,7 @@ namespace GiftCertWeb.Controllers
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
-            string connectionstring = Configuration["ConnectionStrings:DefaultConnection"];
+            string connectionstring = Configuration["ConnectionStrings:ProductionConnection"];
 
             //  var filePath = @"D:/GcDetails.xlsx";
             FileInfo file = new FileInfo(filePath);

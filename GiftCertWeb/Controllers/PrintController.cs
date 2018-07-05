@@ -75,16 +75,18 @@ namespace GiftCertWeb.Controllers
 
                 giftCert.GcCodeValue = GetCodeValue(giftCert.Value);
 
-                var viewAsPdf = "ViewAsPDF2Liner";
+                var viewAsPdf = "ViewAsPDF3Liner";
 
-                if (giftCert.ServicesType.Count == 3)
-                    viewAsPdf = "ViewAsPDF3Liner";
-                else if (giftCert.ServicesType.Count == 2)
-                    viewAsPdf = "ViewAsPDF2Liner";
+                //if (giftCert.ServicesType.Count == 3)
+                //    viewAsPdf = "ViewAsPDF3Liner";
+                //else if (giftCert.ServicesType.Count == 2)
+                //    viewAsPdf = "ViewAsPDF2Liner";
+                
+                //TODO: Add validation if count is > 3
 
                 var report = new ViewAsPdf(viewAsPdf)
                 {                    
-                    PageMargins = {  Right = 12, Top = 12 },
+                    PageMargins = {  Right = 10, Top = 6 },
                     PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                     PageSize = Rotativa.AspNetCore.Options.Size.Letter,                                        
                     Model = giftCert
