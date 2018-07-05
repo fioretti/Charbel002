@@ -1,14 +1,14 @@
 ﻿
 body {
     margin-top: 0px;
-    margin-left: 0px;  
+    margin-left: 0px;
 }
 
 #page_1 {
     position: relative;
     overflow: hidden;
     margin: 67px 0px 598px 0px;
-    padding: 0px;   
+    padding: 0px;
     width: 770px;
     border: none;
     zoom: 200%;
@@ -16,8 +16,8 @@ body {
 
     #page_1 #p1dimg1 {
         position: absolute;
-        top: 0px;
-        left: 440px;
+        top: 2px;
+        left: 439px;
         z-index: -1;
         width: 282px;
         height: 260px;
@@ -28,14 +28,25 @@ body {
             height: 260px;
         }
 
+#p1dimg3 {
+    position: absolute;
+    top: 504px;
+    left: 51px;
+    z-index: -1;
+    width: 164px;
+    height: 50px;
+    zoom: 149%;
+}
+
 #p1dimg2 {
     position: absolute;
-    top: 183px;
-    left: 547px;
+    top: 194px;
+    left: 546px;
     z-index: -1;
     width: 282px;
     height: 260px;
-}
+}
+
 
 
 
@@ -55,7 +66,7 @@ body {
 
 .ft1 {
     font: 15px 'Mistral';
-    line-height: 19px;
+    line-height: 18px;
 }
 
 .ft2 {
@@ -64,38 +75,43 @@ body {
 }
 
 .ft3 {
-    font: bold 19px 'Mistral';
-    line-height: 27px;
+    font: bold 20px 'Mistral';
+    line-height: 30px;
 }
 
 .ft4 {
     font: 13px 'Forte';
-    line-height: 16px;
+    line-height: 14px;
 }
 
 .ft5 {
-    font: 18px 'Mistral';
-    line-height: 26px;
+    font: 19px 'Mistral';
+    line-height: 11px;
+}
+
+.ft6 {
+    font: 11px 'Mistral';
+    line-height: 15px;
 }
 
 .p0 {
     text-align: right;
-    padding-right: 40px;
-    margin-top: 1px;
+    padding-right: 39px;
+    margin-top: 2px;
     margin-bottom: 0px;
 }
 
 .p1 {
     text-align: right;
     padding-right: 40px;
-    margin-top: 16px;
+    margin-top: 1px;
     margin-bottom: 0px;
 }
 
-.p2 {    
+.p2 {
     text-align: right;
     padding-right: 40px;
-    margin-top: 116px;
+    margin-top: 114px;
     margin-bottom: 0px;
 }
 
@@ -109,27 +125,37 @@ body {
 .p4 {
     text-align: center;
     padding-right: 30px;
-    margin-top: 14px;
+    padding-bottom: 34px;
+    margin-top: 12px;
     margin-bottom: 0px;
 }
 
 .p5 {
     text-align: left;
-    padding-left: 45px;
-    margin-top: 18px;
+    padding-left: 48px;
+    margin-top: -6px;
     margin-bottom: 0px;
 }
 
 .p6 {
-    text-align: right;
-    padding-right: 196px;
-    margin-top: 8px;
+    text-align: left;
+    padding-top: 20px;
+    padding-left: 547px;
+    margin-top: -4px;
     margin-bottom: 0px;
 }
 
 .p7 {
     text-align: left;
-    padding-left: 510px;
-    margin-top: 16px;
+    padding-top: 4px;
+    padding-left: 515px;
+    margin-top: 29px;
     margin-bottom: 0px;
-}
+}
+
+.p9 {
+    text-align: right;
+    padding-right: 40px;
+    margin-top: 13px;
+    margin-bottom: 0px;
+}

@@ -24,21 +24,37 @@
         </DIV>
 
         <DIV class="dclr"></DIV>
-        <P class="p0 ft0">@Model.ValueCurrency</P>
-        <P class="p9 ft6">GC @Model.GiftCertNo</P>
-        <P class="p1 ft1">@Model.DtiPermitNo</P>
-        <P class="p2 ft1">@Model.DtiPermitNo</P>
-        <P class="p3 ft2">
+        <div class="p0 ft0">@Model.ValueCurrency</div>
+        <div class="p9 ft6">GC @Model.GiftCertNo</div>
+        <div class="p1 ft1">@Model.DtiPermitNo</div>
+        <div class="p2 ft1">@Model.DtiPermitNo</div>
+        <div class="p3 ft2">
             @Model.ServicesType.ElementAt(0).Name
             <span id="p1dimg2">
                 <qrcode-png alt="QR Code" width="80" height="80" margin="0" content="@Model.QrCode" />
             </span>
-        </P>
-        <P class="p4 ft3">@Model.ServicesType.ElementAt(1).Name</P>
-        <P class="p8 ft3">@Model.ServicesType.ElementAt(2).Name</P>
-        <P class="p5 ft4">Note: @Model.Note</P>
-        <P class="p6 ft5">@Model.GcCodeValue        </P>
-        <P class="p7 ft5">@Model.ExpirationDatePrintFormat</P>
+        </div>
+        @if (Model.ServicesType.Count > 1)
+        {
+            <div class="p4 ft3">@Model.ServicesType.ElementAt(1).Name)</div>
+        }
+        else
+        {
+            <div class="p4 ft3"><br /></div>
+        }
+
+        @if (Model.ServicesType.Count == 3)
+        {
+            <div class="p8 ft3">>@Model.ServicesType.ElementAt(2).Name)</div>
+        }
+        else
+        {
+            <div class="p8 ft3"><br /></div>
+        }
+        
+        <div class="p5 ft4">Note: @Model.Note</div>
+        <div class="p6 ft5">@Model.GcCodeValue        </div>
+        <div class="p7 ft5">@Model.ExpirationDatePrintFormat</div>
     </DIV>
 </BODY>
 </HTML>
