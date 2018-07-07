@@ -18,6 +18,6 @@ namespace GiftCert.Core.Model
         public DateTime? ExpirationDate { get; set; }
         public string CardType { get; set; }
         public int? GiftCertNo { get; set; }
-        public GiftCert GiftCertNoNavigation { get; set; }
+        public List<GiftCert> GiftCerts { get; set; }
     }
 }

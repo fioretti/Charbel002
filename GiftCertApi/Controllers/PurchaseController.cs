@@ -25,36 +25,67 @@ namespace GiftCertApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<PurchaseDto>> GetPurchase()
         {
-            var purchases = new List<PurchaseDto>();                    
-            var gcPurchases = await _context.GcPurchase.Include(p => p.Purchase).Include(g => g.GiftCertNoNavigation).ToListAsync();
-            
-            foreach (var gcPurchase in gcPurchases)
-            {
-                var purchase = new PurchaseDto();
-                purchase.Id = gcPurchase.Purchase.Id;
-                purchase.CcNumber = gcPurchase.Purchase.CcNumber;
-                purchases.Add(purchase);             
-            }
+            var purchases = new List<PurchaseDto>();
+            try
+            {                
+                var gcPurchases = await _context.GcPurchase.Include(p => p.Purchase).Include(g => g.GiftCertNoNavigation).ToListAsync();
 
-            purchases = purchases.GroupBy(p => p.Id).Select(p => p.First()).ToList();
-
-            foreach (var gcPurchase in gcPurchases)
-            {
-                var giftCert = new GiftCertDto();
-                giftCert.GiftCertNo = gcPurchase.GiftCertNoNavigation.GiftCertNo;
-
-                var purchase = purchases.SingleOrDefault(p => p.Id == gcPurchase.PurchaseId);
-
-                if (purchase != null)
+                foreach (var gcPurchase in gcPurchases)
                 {
-                    if (purchase.GiftCerts == null)                    
-                        purchase.GiftCerts = new List<GiftCertDto>();
+                    var purchase = new PurchaseDto();
+                    purchase.Id =  gcPurchase.Purchase.Id;
+                    purchase.PurchaseDate = gcPurchase.Purchase.PurchaseDate != null ? gcPurchase.Purchase.PurchaseDate : DateTime.MinValue;
+                    purchase.LastModifiedBy = gcPurchase.Purchase.LastModifiedBy != null ? gcPurchase.Purchase.LastModifiedBy : string.Empty;
+                    purchase.CreatedDate = gcPurchase.Purchase.CreatedDate != null ? gcPurchase.Purchase.CreatedDate : DateTime.MinValue;
+                    purchase.ModifiedDate = gcPurchase.Purchase.ModifiedDate != null ? gcPurchase.Purchase.ModifiedDate : DateTime.MinValue;
 
-                    if (giftCert.GiftCertNo > 0)
-                        purchase.GiftCerts.Add(giftCert);
-                }               
+                    purchase.Active = gcPurchase.Purchase.Active != null ? gcPurchase.Purchase.Active : true;
+                    purchase.Remarks = gcPurchase.Purchase.Remarks != null ? gcPurchase.Purchase.Remarks : string.Empty;
+                    purchase.PaymentMode = gcPurchase.Purchase.PaymentMode !=null ? gcPurchase.Purchase.PaymentMode : string.Empty;
+                    purchase.CcNumber = gcPurchase.Purchase.CcNumber != null ? gcPurchase.Purchase.CcNumber : string.Empty; 
+                    purchase.ExpirationDate = gcPurchase.Purchase.ExpirationDate != null ? gcPurchase.Purchase.ExpirationDate : DateTime.MinValue;
+                    purchase.CardType = gcPurchase.Purchase.CardType != null ? gcPurchase.Purchase.CardType : string.Empty;  
+                 
+                    purchases.Add(purchase);
+                }
+
+                purchases = purchases.GroupBy(p => p.Id).Select(p => p.First()).ToList();
+
+                foreach (var gcPurchase in gcPurchases)
+                {
+                    var giftCert = new GiftCertDto();
+                    giftCert.GiftCertNo = gcPurchase.GiftCertNoNavigation.GiftCertNo;
+
+                    giftCert.Value = gcPurchase.GiftCertNoNavigation.Value;
+                    giftCert.GcTypeId = gcPurchase.GiftCertNoNavigation.GcTypeId;
+                    giftCert.IssuanceDate = gcPurchase.GiftCertNoNavigation.IssuanceDate ?? DateTime.MinValue;
+                    giftCert.DtiPermitNo = gcPurchase.GiftCertNoNavigation.DtiPermitNo ?? string.Empty;
+                    giftCert.ExpirationDate = gcPurchase.GiftCertNoNavigation.ExpirationDate;
+                    giftCert.LastModifiedBy = gcPurchase.GiftCertNoNavigation.LastModifiedBy ?? string.Empty;
+                    giftCert.CreatedDate = gcPurchase.GiftCertNoNavigation.CreatedDate ?? DateTime.MinValue;
+                    giftCert.ModifiedDate = gcPurchase.GiftCertNoNavigation.ModifiedDate ?? DateTime.MinValue;
+                    giftCert.QrCode = gcPurchase.GiftCertNoNavigation.QrCode;
+                    giftCert.Note = gcPurchase.GiftCertNoNavigation.Note ?? string.Empty;
+                    giftCert.Status = gcPurchase.GiftCertNoNavigation.Status ?? 1;
+
+                    var purchase = purchases.SingleOrDefault(p => p.Id == gcPurchase.PurchaseId);
+
+                    if (purchase != null)
+                    {
+                        if (purchase.GiftCerts == null)
+                            purchase.GiftCerts = new List<GiftCertDto>();
+
+                        if (giftCert.GiftCertNo > 0)
+                            purchase.GiftCerts.Add(giftCert);
+                    }
+                }
+
             }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
             return purchases;
         }
 
