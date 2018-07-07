@@ -16,38 +16,26 @@ using GiftCertApp.Fragments;
 
 namespace GiftCertApp
 {
-    [Activity(Label = "View Gift Cert")]
+    [Activity(Label = "View Purchase")]
     public class ViewGctMenuActivity : Activity
     {
-        private ListView hotDogListView;
-        private List<HotDog> allHotDogs;
-        private GcPurchaseDataService hotDogDataService;
+        private ListView gcPurchaseListView;
+        private List<GcPurchase> allGcPurchases;
+        private GcPurchaseDataService gcPurchaseDataService;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             // Create your application here
-            SetContentView(Resource.Layout.GiftCertMenuView);
+            SetContentView(Resource.Layout.GcPurchaseMenuView);
 
             ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
 
-            AddTab("Favorites", Resource.Drawable.FavoritesIcon, new FavoriteHotDogFragment());
-            AddTab("Meat Lovers", Resource.Drawable.MeatLoversIcon, new MeatLoversFragment());
-            AddTab("Veggie Lovers", Resource.Drawable.VeggieLoversIcon, new VeggieLoversFragment());
-
-            //hotDogListView = FindViewById<ListView>(Resource.Id.hotDogListView);
-
-            //hotDogDataService = new HotDogDataService();
-            //allHotDogs = hotDogDataService.GetAllHotDogs();
-
-
-            //hotDogListView.Adapter = new HotDogListAdapter(this, allHotDogs);
-
-            //hotDogListView.FastScrollEnabled = true;
-
-            //hotDogListView.ItemClick += HotDogListView_ItemClick;
-
+            AddTab("Favorites", Resource.Drawable.FavoritesIcon, new GcPurchaseFragment());
+           // AddTab("Meat Lovers", Resource.Drawable.MeatLoversIcon, new MeatLoversFragment());
+            //AddTab("Veggie Lovers", Resource.Drawable.VeggieLoversIcon, new VeggieLoversFragment());
+         
         }
 
         private void AddTab(string tabText, int iconResourceId, Fragment view)
@@ -72,13 +60,13 @@ namespace GiftCertApp
             this.ActionBar.AddTab(tab);
         }
 
-        private void HotDogListView_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        private void GcPurchaseListView_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
-            var hotDog = allHotDogs[e.Position];
+            var gcPurchase = allGcPurchases[e.Position];
 
             var intent = new Intent();
-            intent.SetClass(this, typeof(HotDogDetailActivity));
-            intent.PutExtra("selectedHotDogId", hotDog.HotDogId);
+            intent.SetClass(this, typeof(GcPurchaseDetailActivity));
+            intent.PutExtra("selectedGcPurchaseId", gcPurchase.Id);
             StartActivityForResult(intent, 100);
         }
 
@@ -88,11 +76,11 @@ namespace GiftCertApp
 
             if (resultCode == Result.Ok && requestCode == 100)
             {
-                var selectedHotDog = hotDogDataService.GetHotDogById(data.GetIntExtra("selectedHotDogId", 0));
+                var selectedGcPurchase = gcPurchaseDataService.GetGcPurchaseById(data.GetIntExtra("selectedGcPurchaseId", 0));
 
                 var dialog = new AlertDialog.Builder(this);
                 dialog.SetTitle("Confirmation");
-                dialog.SetMessage(string.Format("You've added {0} time(s) the {1}", data.GetIntExtra("amount", 0), selectedHotDog.CcNumber));
+                dialog.SetMessage(string.Format("You've added {0} time(s) the {1}", data.GetIntExtra("amount", 0), selectedGcPurchase.CcNumber));
                 dialog.Show();
             }
         }

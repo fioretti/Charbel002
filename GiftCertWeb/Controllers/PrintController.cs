@@ -86,7 +86,7 @@ namespace GiftCertWeb.Controllers
 
                 var report = new ViewAsPdf(viewAsPdf)
                 {                    
-                    PageMargins = {  Right = 10, Top = 6 },
+                    PageMargins = {  Right = 5, Top = 0 },
                     PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                     PageSize = Rotativa.AspNetCore.Options.Size.Letter,                                        
                     Model = giftCert
