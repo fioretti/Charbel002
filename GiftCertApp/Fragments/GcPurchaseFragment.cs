@@ -14,7 +14,7 @@ using GiftCertApp.Adapters;
 
 namespace GiftCertApp.Fragments
 {
-    public class FavoriteHotDogFragment : BaseFragment
+    public class GcPurchaseFragment : BaseFragment
     {
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -30,13 +30,13 @@ namespace GiftCertApp.Fragments
 
             HandleEvents();
 
-            gcPurchases = gcPurchaseDataService.GetFavoriteHotDogs();
-            listView.Adapter = new HotDogListAdapter(this.Activity, gcPurchases);
+            gcPurchases = gcPurchaseDataService.GetGcPurchases();
+            listView.Adapter = new GcPurchaseListAdapter(this.Activity, gcPurchases);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return inflater.Inflate(Resource.Layout.FavoriteHotDogFragment, container, false);
+            return inflater.Inflate(Resource.Layout.GcPurchaseFragment, container, false);
         }
     }
 }

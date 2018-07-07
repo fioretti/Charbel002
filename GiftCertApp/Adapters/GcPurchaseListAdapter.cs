@@ -14,12 +14,12 @@ using GiftCertApp.Utility;
 
 namespace GiftCertApp.Adapters
 {
-    public class HotDogListAdapter : BaseAdapter<GcPurchase>
+    public class GcPurchaseListAdapter : BaseAdapter<GcPurchase>
     {
         List<GcPurchase> items;
         Activity context;
 
-        public HotDogListAdapter(Activity context, List<GcPurchase> items) : base()
+        public GcPurchaseListAdapter(Activity context, List<GcPurchase> items) : base()
         {
             this.context = context;
             this.items = items;
@@ -54,7 +54,7 @@ namespace GiftCertApp.Adapters
 
             if (convertView == null)
             {
-                convertView = context.LayoutInflater.Inflate(Resource.Layout.HotDogRowView, null);
+                convertView = context.LayoutInflater.Inflate(Resource.Layout.GcPurchaseRowView, null);
             }
             convertView.FindViewById<TextView>(Resource.Id.hotDogNameTextView).Text = item.CcNumber;
             convertView.FindViewById<TextView>(Resource.Id.shortDescriptionTextView).Text = item.CcNumber;

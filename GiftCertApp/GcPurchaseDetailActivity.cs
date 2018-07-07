@@ -16,7 +16,7 @@ using GiftCertApp.Utility;
 namespace GiftCertApp
 {
     [Activity(Label = "Hot dog detail")]
-    public class HotDogDetailActivity : Activity
+    public class GcPurchaseDetailActivity : Activity
     {
 
         private ImageView hotDogImageView;
@@ -39,8 +39,8 @@ namespace GiftCertApp
 
 
             GcPurchaseDataService dataService = new GcPurchaseDataService();
-            var selectedHotDogId = Intent.Extras.GetInt("selectedHotDogId");
-            selectedHotDog = dataService.GetHotDogById(selectedHotDogId);
+            var selectedGcPurchaseId = Intent.Extras.GetInt("selectedGcPurchaseId");
+            selectedHotDog = dataService.GetGcPurchaseById(selectedGcPurchaseId);
 
 
             FindViews();

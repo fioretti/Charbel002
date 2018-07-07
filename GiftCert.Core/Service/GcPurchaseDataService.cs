@@ -20,17 +20,17 @@ namespace GiftCert.Core.Service
         //    return giftCertRepository.GetGroupedHotDogs();
         //}
 
-        public List<GcPurchase> GetHotDogsForGroup(int hotDogGroupId)
+        //public List<GcPurchase> GetGcPurchasesForGroup(int hotDogGroupId)
+        //{
+        //    return gcPurchaseRepository.GetGcPurchases();
+        //}
+
+        public List<GcPurchase> GetGcPurchases()
         {
             return gcPurchaseRepository.GetGcPurchases();
         }
 
-        public List<GcPurchase> GetFavoriteHotDogs()
-        {
-            return gcPurchaseRepository.GetGcPurchases();
-        }
-
-        public GcPurchase GetHotDogById(int orderId)
+        public GcPurchase GetGcPurchaseById(int orderId)
         {
             return gcPurchaseRepository.GetGcPurchaseById(orderId);
         }

@@ -32,7 +32,7 @@ namespace GiftCertApp.Fragments
             HandleEvents();
 
             gcPurchases = gcPurchaseDataService.GetHotDogsForGroup(2);
-            listView.Adapter = new HotDogListAdapter(this.Activity, gcPurchases);
+            listView.Adapter = new GcPurchaseListAdapter(this.Activity, gcPurchases);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -32,7 +32,7 @@ namespace GiftCertApp.Fragments
         }
         protected void FindViews()
         {
-            listView = this.View.FindViewById<ListView>(Resource.Id.hotDogListView);
+            listView = this.View.FindViewById<ListView>(Resource.Id.gcPurchaseListView);
         }
 
         protected void ListView_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
@@ -40,8 +40,8 @@ namespace GiftCertApp.Fragments
             var gcPurchase = gcPurchases[e.Position];
 
             var intent = new Intent();
-            intent.SetClass(this.Activity, typeof(HotDogDetailActivity));
-            intent.PutExtra("selectedHotDogId", gcPurchase.Id);
+            intent.SetClass(this.Activity, typeof(GcPurchaseDetailActivity));
+            intent.PutExtra("selectedGcPurchaseId", gcPurchase.Id);
 
             StartActivityForResult(intent, 100);
         }

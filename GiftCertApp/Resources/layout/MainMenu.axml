@@ -23,9 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/viewPurchaseGcButton" />
-  <Button
-       android:text="View Redeem Gift Cert"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/viewRedeemGcButton" />
+    <Button
+        android:text="View Redeem Gift Cert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewRedeemGcButton" />
 </LinearLayout>

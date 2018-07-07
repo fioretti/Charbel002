@@ -12,7 +12,7 @@ namespace GiftCert.Core.Repository
     public class GcPurchaseRepository
     {
 
-        string url = "http://localhost:8080/api/gcpurchase";
+        string url = "http://localhost:8081/api/Purchase";
         private static List<GcPurchase> gcPurchases = new List<GcPurchase>();
 
         public GcPurchaseRepository()
@@ -33,7 +33,7 @@ namespace GiftCert.Core.Repository
                         Task<HttpResponseMessage> getResponse = httpClient.GetAsync(uri);
                         HttpResponseMessage response = await getResponse;
 
-                        responseJsonString = await response.Content.ReadAsStringAsync();
+                      //  responseJsonString = await response.Content.ReadAsStringAsync();
                         gcPurchases = JsonConvert.DeserializeObject<List<GcPurchase>>(responseJsonString);
                     }
                     catch (Exception ex)
