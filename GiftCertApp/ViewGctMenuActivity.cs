@@ -16,7 +16,7 @@ using GiftCertApp.Fragments;
 
 namespace GiftCertApp
 {
-    [Activity(Label = "View Purchase")]
+    [Activity(Label = "View Purchase Gift Cert")]
     public class ViewGctMenuActivity : Activity
     {
         private ListView gcPurchaseListView;
@@ -32,10 +32,10 @@ namespace GiftCertApp
 
             ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
 
-            AddTab("Favorites", Resource.Drawable.FavoritesIcon, new GcPurchaseFragment());
-           // AddTab("Meat Lovers", Resource.Drawable.MeatLoversIcon, new MeatLoversFragment());
-            //AddTab("Veggie Lovers", Resource.Drawable.VeggieLoversIcon, new VeggieLoversFragment());
-         
+            AddTab("By Order", Resource.Drawable.FavoritesIcon, new GcPurchaseFragment());
+            AddTab("By Purchase Date", Resource.Drawable.MeatLoversIcon, new GcPurchaseFragment());
+            AddTab("By Payment Mode", Resource.Drawable.VeggieLoversIcon, new GcPurchaseFragment());
+
         }
 
         private void AddTab(string tabText, int iconResourceId, Fragment view)
