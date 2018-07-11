@@ -26,8 +26,25 @@
         <DIV class="dclr"></DIV>
         <div class="p0 ft0">@Model.ValueCurrency</div>
         <div class="p9 ft6">GC @Model.GiftCertNo</div>
-        <div class="p1 ft1">@Model.DtiPermitNo</div>
-        <div class="p2 ft1">@Model.DtiPermitNo</div>
+        @if (string.IsNullOrEmpty(Model.DtiPermitNo))
+        {
+            <div class="p1 ft1"><br /></div>
+        }
+        else
+        {
+            <div class="p1 ft1">@Model.DtiPermitNo</div>
+        }
+
+        @if (string.IsNullOrEmpty(Model.DtiPermitNo))
+        {
+            <div class="p2 ft1"><br /></div>
+        }
+        else
+        {
+            <div class="p2 ft1">@Model.DtiPermitNo</div>
+
+        }
+
         <div class="p3 ft2">
             @Model.ServicesType.ElementAt(0).Name
             <span id="p1dimg2">
@@ -51,7 +68,7 @@
         {
             <div class="p8 ft3"><br /></div>
         }
-        
+
         <div class="p5 ft4">Note: @Model.Note</div>
         <div class="p6 ft5">@Model.GcCodeValue        </div>
         <div class="p7 ft5">@Model.ExpirationDatePrintFormat</div>
